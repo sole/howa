@@ -1,0 +1,15 @@
+{
+  "name": "handsonwebaudio",
+  "version": "1.0.0",
+  "description": "wop wop",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "web",
+    "audio"
+  ],
+  "author": "sole",
+  "license": "Apache 2"
+}
