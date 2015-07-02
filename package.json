@@ -11,5 +11,9 @@
     "audio"
   ],
   "author": "sole",
-  "license": "Apache 2"
+  "license": "Apache 2",
+  "dependencies": {
+    "gulp": "^3.9.0",
+    "you-know-what": "^1.0.0"
+  }
 }
