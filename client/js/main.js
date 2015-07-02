@@ -1,3 +1,4 @@
+var THREE = require('n3d-threejs');
 var rendererContainer;
 var renderer;
 var scene;
