@@ -1,5 +1,7 @@
 var path = require('path');
 var gulp = require('gulp');
+var watch = require('gulp-watch');
+var batch = require('gulp-batch');
 var youKnowWhat = require('you-know-what');
 
 var buildDir = path.join(__dirname, 'build');
@@ -32,4 +34,10 @@ gulp.task('build-static-css', function() {
 	]).pipe(gulp.dest(path.join(buildDir, 'css')));
 });
 
-gulp.task('default', ['build']);
+gulp.task('watch', function () {
+    watch(path.join(clientDir, '**/**/*'), batch(function() {
+        gulp.start('build');
+    }));
+});
+
+gulp.task('default', ['build', 'watch']);
