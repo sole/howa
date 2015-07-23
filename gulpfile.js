@@ -35,8 +35,8 @@ gulp.task('build-static-css', function() {
 });
 
 gulp.task('watch', function () {
-    watch(path.join(clientDir, '**/**/*'), batch(function() {
-        gulp.start('build');
+	watch(path.join(clientDir, '**/*'), batch(function(events, done) {
+        gulp.start('build', done);
     }));
 });
 
