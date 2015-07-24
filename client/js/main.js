@@ -4,7 +4,6 @@ var slides;
 document.addEventListener('DOMContentLoaded', init);
 
 function init() {
-	console.log('ooh yea');
 
 	var htmlSlidesElement = document.querySelector('.slides');
 	slides = new Threedees();
@@ -16,7 +15,9 @@ function init() {
 	window.addEventListener('resize', onWindowResized);
 
 	onWindowResized();
-	slides.render(0);
+
+	requestAnimationFrame(render);
+
 }
 
 function onWindowResized() {
@@ -25,3 +26,7 @@ function onWindowResized() {
 	slides.resize(w, h);
 }
 
+function render(t) {
+	requestAnimationFrame(render);
+	slides.render(t);
+}
