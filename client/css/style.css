@@ -7,3 +7,12 @@
 body, html {
 	height: 100%;
 }
+
+@media print {
+
+	/* No need to show an static 3D canvas when printing the slides */
+	#renderer {
+		display: none;
+	}
+
+}
