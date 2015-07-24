@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-	"start": "gulp" 
+    "start": "gulp"
   },
   "keywords": [
     "web",
@@ -17,6 +17,7 @@
     "gulp": "^3.9.0",
     "gulp-batch": "^1.0.5",
     "gulp-watch": "^4.2.4",
+    "make-array": "^0.1.2",
     "n3d-threejs": "^70.0.0",
     "you-know-what": "^1.0.0"
   }

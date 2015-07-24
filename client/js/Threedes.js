@@ -1,4 +1,5 @@
 var THREE = require('n3d-threejs');
+var htmlTo3D = require('./htmlTo3D');
 
 function Threedees() {
 	var renderer;
@@ -21,6 +22,15 @@ function Threedees() {
 		var cameraTarget = new THREE.Vector3( 0, 0, 0 );
 		camera.position.set(0, 0, 10);
 		camera.lookAt(cameraTarget);
+
+		var threeDeeSlides = htmlTo3D(htmlSlides);
+
+		console.log(threeDeeSlides);
+		threeDeeSlides.forEach(function(slide) {
+			// TODO find bounding box per slide and position horizontally LTR
+			// also use minimum separation between slide
+			scene.add(slide);
+		});
 
 		var light = new THREE.DirectionalLight(0xdfebff, 1);
 		light.target.position.set(0, 0, 0);
