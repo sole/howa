@@ -8,9 +8,11 @@ function isKnownNode(name) {
 }
 
 function make3DNode(el) {
-	var n = 5;
+	var n = Math.round(3 + 5 * Math.random());
+	var colours = [ 0xFF0000, 0x00FF00, 0x0000FF ];
+	var randColour = (colours.length * Math.random()) | 0;
 	var geom = new THREE.BoxGeometry(n, n, n);
-	var mat = new THREE.MeshBasicMaterial({ color: 0xFF0000 });
+	var mat = new THREE.MeshBasicMaterial({ wireframe: true, color: colours[randColour] });
 	var obj = new THREE.Mesh(geom, mat);
 	return obj;
 }
@@ -40,6 +42,13 @@ module.exports = function(html) {
 				sectionNode.add(obj);
 			}
 		});
+
+		/*// Need to "center" the children vertically so our 0.0 is the center of the objects
+		console.log('nex', nextChildrenPosition.y);
+		var offsetY = -0.5 * nextChildrenPosition.y;
+		sectionNode.traverseVisible(function(obj) {
+			obj.position.y += offsetY;
+		});*/
 
 		return sectionNode;
 	});
