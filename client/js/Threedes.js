@@ -42,22 +42,25 @@ function Threedees() {
 
 		// controls.keys = [ 65, 83, 68 ]; TODO what are these keys? 65 is A
 
+		var axisHelper = new THREE.AxisHelper(100);
+		scene.add(axisHelper);
+		
 		var threeDeeSlides = htmlTo3D(htmlSlides);
-
-		console.log(threeDeeSlides);
 
 		var lastSlidePosition = new THREE.Vector3();
 		threeDeeSlides.forEach(function(slide) {
-			// TODO find bounding box per slide and position horizontally LTR
-			// also use minimum separation between slide
+
+			var bbhelper = new THREE.BoundingBoxHelper(slide, 0xFF00FF);
+			bbhelper.update();
+			slide.add(bbhelper);
+
+			// Position slides horizontally, LTR
+			// TODO use minimum separation between slide
 			var slideBox = makeBoundingBox(slide);
-			console.log('SLIDE BOX');
-			console.table(slideBox);
 			scene.add(slide);
 			slide.position.x = lastSlidePosition.x;
-			var slideDimensions = slideBox.max.sub(slideBox.min);
+			var slideDimensions = slideBox.size();
 			lastSlidePosition = lastSlidePosition.add(slideDimensions);
-			console.table(lastSlidePosition);
 		});
 
 		var light = new THREE.DirectionalLight(0xdfebff, 1);

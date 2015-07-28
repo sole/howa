@@ -8,11 +8,11 @@ function isKnownNode(name) {
 }
 
 function make3DNode(el) {
-	var n = Math.round(3 + 5 * Math.random());
-	var colours = [ 0xFF0000, 0x00FF00, 0x0000FF ];
+	var n = Math.round(1 + 3 * Math.random());
+	var colours = [ 0xFF0000, 0x00FF00, 0x00ffFF ];
 	var randColour = (colours.length * Math.random()) | 0;
-	var geom = new THREE.BoxGeometry(n, n, n);
-	var mat = new THREE.MeshBasicMaterial({ wireframe: true, color: colours[randColour] });
+	var geom = new THREE.BoxGeometry(n, n, n); // new THREE.SphereGeometry(n, 8, 8);
+	var mat = new THREE.MeshBasicMaterial({ wireframe: true, color: colours[randColour], wireframeLinewidth: 2 });
 	var obj = new THREE.Mesh(geom, mat);
 	return obj;
 }
@@ -24,31 +24,31 @@ module.exports = function(html) {
 	var out = sections.map(function(section) {
 		var sectionNode = new THREE.Object3D();
 		var children = makeArray(section.childNodes);
-		var nextChildrenPosition = new THREE.Vector3();
 
-		children.forEach(function(el) {
+		var childrenObjects = children.map(function(el) {
 			if(isKnownNode(el.nodeName)) {
-				var obj = make3DNode(el);
-
-				obj.position.copy(nextChildrenPosition);
 				
-				obj.geometry.computeBoundingBox();
-				var box = obj.geometry.boundingBox;
-				var dimensions = box.max.sub(box.min);
-
-				// Top to bottom text actually goes 'down' on the Y axis
-				nextChildrenPosition.y -= dimensions.y;
-				
-				sectionNode.add(obj);
+				return make3DNode(el);
+			
 			}
+		}).filter(function(obj) {
+			return obj !== undefined;
 		});
 
-		/*// Need to "center" the children vertically so our 0.0 is the center of the objects
-		console.log('nex', nextChildrenPosition.y);
-		var offsetY = -0.5 * nextChildrenPosition.y;
-		sectionNode.traverseVisible(function(obj) {
-			obj.position.y += offsetY;
-		});*/
+		var offsetY = 0;
+		childrenObjects.forEach(function(obj, index) {
+
+			obj.geometry.computeBoundingBox();
+			var objBox = obj.geometry.boundingBox;
+			var objDimensions = objBox.size();
+			var halfHeight = objDimensions.y * 0.5;
+
+			obj.position.y = offsetY - halfHeight;
+			offsetY = obj.position.y - halfHeight;
+
+			sectionNode.add(obj);
+			
+		});
 
 		return sectionNode;
 	});
