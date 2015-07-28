@@ -6,6 +6,11 @@
 
 body, html {
 	height: 100%;
+	overflow: hidden;
+}
+
+.slides {
+	display: none;
 }
 
 @media print {
@@ -13,6 +18,14 @@ body, html {
 	/* No need to show an static 3D canvas when printing the slides */
 	#renderer {
 		display: none;
+	}
+
+	.slides {
+		display: block;
+	}
+
+	body, html {
+		overflow: auto;
 	}
 
 }
