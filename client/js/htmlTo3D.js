@@ -1,5 +1,6 @@
 var THREE = require('n3d-threejs');
 var makeArray = require('make-array');
+var distributeObjects = require('./distribute-objects')(THREE);
 
 var knownNodes = ['H1', 'H2'];
 
@@ -38,7 +39,7 @@ module.exports = function(html) {
 		});
 
 		// Distributing the objects vertically, top to bottom
-		var offsetY = 0;
+		/*var offsetY = 0;
 		childrenObjects.forEach(function(obj, index) {
 
 			obj.geometry.computeBoundingBox();
@@ -49,7 +50,9 @@ module.exports = function(html) {
 			obj.position.y = offsetY - halfHeight;
 			offsetY = obj.position.y - halfHeight;
 			
-		});
+		});*/
+
+		distributeObjects(childrenObjects, { offset: 0, dimension: 'y', direction: -1 });
 
 
 		// And this centers the children objects vertically on the slide

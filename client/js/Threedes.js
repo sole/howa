@@ -1,6 +1,7 @@
 var THREE = require('n3d-threejs');
 var htmlTo3D = require('./htmlTo3D');
 var makeBoundingBox = require('./make-bounding-box')(THREE);
+var distributeObjects = require('./distribute-objects')(THREE);
 
 window.THREE = THREE; // urgh, but required for the include below
 var TrackballControls = require('./vendor/TrackballControls');
@@ -50,18 +51,19 @@ function Threedees() {
 		var lastSlidePosition = new THREE.Vector3();
 		threeDeeSlides.forEach(function(slide) {
 
+			scene.add(slide);
+			
+			// TMP
 			var bbhelper = new THREE.BoundingBoxHelper(slide, 0xFF00FF);
 			bbhelper.update();
-			slide.add(bbhelper);
+			slide.add(bbhelper); // *** TMP
 
-			// Position slides horizontally, LTR
-			// TODO use minimum separation between slide
-			var slideBox = makeBoundingBox(slide);
-			scene.add(slide);
-			slide.position.x = lastSlidePosition.x;
-			var slideDimensions = slideBox.size();
-			lastSlidePosition = lastSlidePosition.add(slideDimensions);
 		});
+
+		// Position slides horizontally, LTR
+		// TODO use minimum separation between slide
+		distributeObjects(threeDeeSlides, { dimension: 'x' });
+
 
 		var light = new THREE.DirectionalLight(0xdfebff, 1);
 		light.target.position.set(0, 0, 0);
