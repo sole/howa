@@ -25,16 +25,19 @@ module.exports = function(html) {
 		var sectionNode = new THREE.Object3D();
 		var children = makeArray(section.childNodes);
 
+		// Create and add nodes to section
 		var childrenObjects = children.map(function(el) {
 			if(isKnownNode(el.nodeName)) {
-				
-				return make3DNode(el);
+				var obj = make3DNode(el);
+				sectionNode.add(obj);
+				return obj;
 			
 			}
 		}).filter(function(obj) {
 			return obj !== undefined;
 		});
 
+		// Distributing the objects vertically, top to bottom
 		var offsetY = 0;
 		childrenObjects.forEach(function(obj, index) {
 
@@ -45,9 +48,18 @@ module.exports = function(html) {
 
 			obj.position.y = offsetY - halfHeight;
 			offsetY = obj.position.y - halfHeight;
-
-			sectionNode.add(obj);
 			
+		});
+
+
+		// And this centers the children objects vertically on the slide
+		var sectionBox = new THREE.Box3();
+		sectionBox.setFromObject(sectionNode);
+		var sectionSize = sectionBox.size();
+		var halfSectionHeight = sectionSize.y * 0.5;
+
+		childrenObjects.forEach(function(obj) {
+			obj.position.y += halfSectionHeight;
 		});
 
 		return sectionNode;
