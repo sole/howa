@@ -18,6 +18,8 @@ function init() {
 
 	requestAnimationFrame(render);
 
+	slides.show(0);
+
 }
 
 function onWindowResized() {

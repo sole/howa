@@ -11,6 +11,7 @@ function Threedees() {
 	var camera;
 	var cameraTarget;
 	var controls;
+	var threeDeeSlides;
 
 	this.init = function(htmlSlides) {
 
@@ -45,7 +46,7 @@ function Threedees() {
 		var axisHelper = new THREE.AxisHelper(100);
 		scene.add(axisHelper);
 		
-		var threeDeeSlides = htmlTo3D(htmlSlides);
+		threeDeeSlides = htmlTo3D(htmlSlides);
 
 		var lastSlidePosition = new THREE.Vector3();
 		threeDeeSlides.forEach(function(slide) {
@@ -94,6 +95,23 @@ function Threedees() {
 		controls.update();
 		camera.lookAt(cameraTarget);
 		renderer.render(scene, camera);
+	};
+
+	this.show = function(slideNumber) {
+		console.log('showing slide', slideNumber);
+
+		var slide = threeDeeSlides[slideNumber];
+		console.log('position', slide.position);
+
+		// Need to look at the center of the object
+		var box = new THREE.Box3();
+		box.setFromObject(slide);
+
+		var slideCenter = box.center();
+
+		cameraTarget.copy(slideCenter);
+		camera.position.copy(slideCenter.add(new THREE.Vector3(0, 0, 50)));
+
 	};
 
 }

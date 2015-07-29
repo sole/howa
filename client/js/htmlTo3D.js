@@ -3,8 +3,8 @@ var makeArray = require('make-array');
 var distributeObjects = require('./distribute-objects')(THREE);
 var makeTextGeometry = require('./make-text-geometry');
 
-require('./vendor/optimer_bold.typeface.js');
-require('./vendor/helvetiker_bold.typeface.js');
+//require('./vendor/optimer_bold.typeface.js');
+//require('./vendor/helvetiker_bold.typeface.js');
 require('./vendor/helvetiker_regular.typeface.js');
 
 
