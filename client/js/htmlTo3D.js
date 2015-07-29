@@ -1,6 +1,12 @@
 var THREE = require('n3d-threejs');
 var makeArray = require('make-array');
 var distributeObjects = require('./distribute-objects')(THREE);
+var makeTextGeometry = require('./make-text-geometry');
+
+require('./vendor/optimer_bold.typeface.js');
+require('./vendor/helvetiker_bold.typeface.js');
+require('./vendor/helvetiker_regular.typeface.js');
+
 
 var knownNodes = ['H1', 'H2'];
 
@@ -12,8 +18,24 @@ function make3DNode(el) {
 	var n = Math.round(1 + 3 * Math.random());
 	var colours = [ 0xFF0000, 0x00FF00, 0x00ffFF ];
 	var randColour = (colours.length * Math.random()) | 0;
-	var geom = new THREE.BoxGeometry(n, n, n); // new THREE.SphereGeometry(n, 8, 8);
-	var mat = new THREE.MeshBasicMaterial({ wireframe: true, color: colours[randColour], wireframeLinewidth: 2 });
+
+	// This makes no freaking sense.
+	// "height" is actually the depth (in Z),
+	// "size" is the... thickness?
+	//  (╯°□°）╯︵ ┻━┻
+	
+	var str = el.textContent;
+	
+	var geom = new THREE.TextGeometry(str, {
+		size: 10,
+		height: 1,
+		curveSegments: 5
+	});
+
+	geom.computeBoundingBox();
+	geom.computeVertexNormals();
+	
+	var mat = new THREE.MeshBasicMaterial({ wireframe: true, color: colours[randColour] });
 	var obj = new THREE.Mesh(geom, mat);
 	return obj;
 }
@@ -39,31 +61,19 @@ module.exports = function(html) {
 		});
 
 		// Distributing the objects vertically, top to bottom
-		/*var offsetY = 0;
-		childrenObjects.forEach(function(obj, index) {
-
-			obj.geometry.computeBoundingBox();
-			var objBox = obj.geometry.boundingBox;
-			var objDimensions = objBox.size();
-			var halfHeight = objDimensions.y * 0.5;
-
-			obj.position.y = offsetY - halfHeight;
-			offsetY = obj.position.y - halfHeight;
-			
-		});*/
-
 		distributeObjects(childrenObjects, { offset: 0, dimension: 'y', direction: -1 });
 
 
 		// And this centers the children objects vertically on the slide
-		var sectionBox = new THREE.Box3();
+		/*var sectionBox = new THREE.Box3();
 		sectionBox.setFromObject(sectionNode);
 		var sectionSize = sectionBox.size();
 		var halfSectionHeight = sectionSize.y * 0.5;
 
 		childrenObjects.forEach(function(obj) {
 			obj.position.y += halfSectionHeight;
-		});
+			console.log(obj);
+		});*/
 
 		return sectionNode;
 	});

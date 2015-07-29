@@ -1,6 +1,5 @@
 var THREE = require('n3d-threejs');
 var htmlTo3D = require('./htmlTo3D');
-var makeBoundingBox = require('./make-bounding-box')(THREE);
 var distributeObjects = require('./distribute-objects')(THREE);
 
 window.THREE = THREE; // urgh, but required for the include below
@@ -27,7 +26,7 @@ function Threedees() {
 
 		camera = new THREE.PerspectiveCamera(60, 320 / 200, 1, 100000);
 		cameraTarget = new THREE.Vector3(0, 0, 0);
-		camera.position.set(0, 0, 10);
+		camera.position.set(0, 20, 40);
 		camera.lookAt(cameraTarget);
 
 		controls = new THREE.TrackballControls(camera);
@@ -82,15 +81,6 @@ function Threedees() {
 		light.shadowCameraFar = 1000;
 		light.shadowDarkness = 0.5;
 		scene.add(light);
-
-		/*var n = 5;
-		var cubeGeometry = new THREE.BoxGeometry(n, n, n);
-		var material = new THREE.MeshPhongMaterial({ color: 0xFFFFFF });
-		cube = new THREE.Mesh(cubeGeometry, material);
-		cube.rotation.x = Math.PI / 4;
-		cube.castShadow = true;
-
-		scene.add(cube);*/
 
 	};
 
