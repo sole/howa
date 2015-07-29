@@ -8,11 +8,12 @@ module.exports = function(THREE) {
 		objects.forEach(function(obj) {
 			var objBox = new THREE.Box3();
 			objBox.setFromObject(obj);
-			var objDimensions = objBox.size();
-			var halfDisplacement = objDimensions[dimension] * 0.5 * direction;
 
-			obj.position[dimension] = offset + halfDisplacement;
-			offset = obj.position[dimension] + halfDisplacement;
+			var objDimensions = objBox.size();
+			
+			obj.position[dimension] = offset;
+
+			offset += objDimensions[dimension];
 		});
 	};
 
