@@ -12,6 +12,7 @@ function Threedees() {
 	var cameraTarget;
 	var controls;
 	var threeDeeSlides;
+	var currentSlideNumber = 0;
 
 	this.init = function(htmlSlides) {
 
@@ -112,6 +113,16 @@ function Threedees() {
 		cameraTarget.copy(slideCenter);
 		camera.position.copy(slideCenter.add(new THREE.Vector3(0, 0, 50)));
 
+	};
+
+	this.showNext = function() {
+		currentSlideNumber = ++currentSlideNumber % threeDeeSlides.length;
+		this.show(currentSlideNumber);
+	};
+
+	this.showPrevious = function() {
+		currentSlideNumber = --currentSlideNumber < 0 ? threeDeeSlides.length - 1 : currentSlideNumber;
+		this.show(currentSlideNumber);
 	};
 
 }
