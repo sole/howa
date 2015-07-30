@@ -1,6 +1,9 @@
+var EventEmitter = require('events').EventEmitter;
+var util = require('util');
 var THREE = require('n3d-threejs');
 var htmlTo3D = require('./htmlTo3D');
 var distributeObjects = require('./distribute-objects')(THREE);
+
 
 window.THREE = THREE; // urgh, but required for the include below
 var TrackballControls = require('./vendor/TrackballControls');
@@ -13,6 +16,8 @@ function Threedees() {
 	var controls;
 	var threeDeeSlides;
 	var currentSlideNumber = 0;
+
+	EventEmitter.call(this);
 
 	this.init = function(htmlSlides) {
 
@@ -113,6 +118,8 @@ function Threedees() {
 		cameraTarget.copy(slideCenter);
 		camera.position.copy(slideCenter.add(new THREE.Vector3(0, 0, 50)));
 
+		this.emit('change', { index: slideNumber });
+
 	};
 
 	this.showNext = function() {
@@ -126,5 +133,7 @@ function Threedees() {
 	};
 
 }
+
+util.inherits(Threedees, EventEmitter);
 
 module.exports = Threedees;

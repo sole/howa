@@ -9,6 +9,10 @@ function init() {
 	slides = new Threedees();
 	slides.init(htmlSlidesElement);
 
+	slides.on('change', function(ev) {
+		saveURL(ev.index);
+	});
+
 	var rendererContainer = document.getElementById('renderer');
 	rendererContainer.appendChild(slides.domElement);
 
@@ -34,7 +38,28 @@ function init() {
 
 	requestAnimationFrame(render);
 
-	slides.show(0);
+	readURL();
+
+}
+
+
+function saveURL(index) {
+	window.location.hash = index;
+}
+
+
+function readURL() {
+	var index = 0;
+
+	if(window.location.hash) {
+		var hash = window.location.hash;
+		hash = hash.replace('#', '');
+		index = parseInt(hash, 10);
+		if(isNaN(index)) {
+			index = 0;
+		}
+		slides.show(index);
+	}
 
 }
 
