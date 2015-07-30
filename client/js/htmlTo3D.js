@@ -5,16 +5,23 @@ var distributeObjects = require('./distribute-objects')(THREE);
 require('./vendor/helvetiker_regular.typeface.js');
 
 
-var knownNodes = ['H1', 'H2'];
+var knownNodes = {
+	'H1': { size: 20 },
+	'H2': { size: 10 },
+	'P': { size: 8 }
+};
+
+var knownNodesKeys = Object.keys(knownNodes);
 
 function isKnownNode(name) {
-	return knownNodes.indexOf(name) !== -1;
+	return knownNodesKeys.indexOf(name) !== -1;
 }
 
 function make3DNode(el) {
 	var n = Math.round(1 + 3 * Math.random());
 	var colours = [ 0xFF0000, 0x00FF00, 0x00ffFF ];
 	var randColour = (colours.length * Math.random()) | 0;
+	var nodeProperties = knownNodes[el.nodeName];
 
 	// This makes no freaking sense.
 	// "height" is actually the depth (in Z),
@@ -24,7 +31,7 @@ function make3DNode(el) {
 	var str = el.textContent;
 	
 	var geom = new THREE.TextGeometry(str, {
-		size: 10,
+		size: nodeProperties.size,
 		height: 1,
 		curveSegments: 5
 	});
