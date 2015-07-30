@@ -20,6 +20,7 @@
     "gulp-watch": "^4.2.4",
     "make-array": "^0.1.2",
     "n3d-threejs": "^70.0.0",
+    "tween.js": "^15.0.0",
     "you-know-what": "^1.0.0"
   }
 }

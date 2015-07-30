@@ -1,12 +1,28 @@
 var EventEmitter = require('events').EventEmitter;
 var util = require('util');
 var THREE = require('n3d-threejs');
+var TWEEN = require('tween.js');
 var htmlTo3D = require('./htmlTo3D');
 var distributeObjects = require('./distribute-objects')(THREE);
 
 
 window.THREE = THREE; // urgh, but required for the include below
 var TrackballControls = require('./vendor/TrackballControls');
+
+function tweenObject(object, destination, duration) {
+	var tween = object.__internalTween;
+	if(tween) {
+		console.log('stopping existing', tween);
+		tween.stop();
+	}
+
+	tween = new TWEEN.Tween(object);
+	tween.easing(TWEEN.Easing.Elastic.Out);
+	tween.to(destination, duration);
+
+	object.__internalTween = tween;
+	return tween;
+}
 
 function Threedees() {
 	var renderer;
@@ -99,6 +115,7 @@ function Threedees() {
 
 	this.render = function(time) {
 		controls.update();
+		TWEEN.update(time);
 		camera.lookAt(cameraTarget);
 		renderer.render(scene, camera);
 	};
@@ -113,10 +130,25 @@ function Threedees() {
 		var box = new THREE.Box3();
 		box.setFromObject(slide);
 
+		var transitionDuration = 1500;
 		var slideCenter = box.center();
 
-		cameraTarget.copy(slideCenter);
-		camera.position.copy(slideCenter.add(new THREE.Vector3(0, 0, 50)));
+
+		tweenObject(cameraTarget, {
+			x: slideCenter.x,
+			y: slideCenter.y,
+			z: slideCenter.z
+		}, transitionDuration).start();
+
+		var dstCamera = slideCenter.add(new THREE.Vector3(0, 0, 50));
+		tweenObject(camera.position, {
+			x: dstCamera.x,
+			y: dstCamera.y,
+			z: dstCamera.z
+		}, transitionDuration).start();
+
+		//cameraTarget.copy(slideCenter);
+		//camera.position.copy(dstCamera);
 
 		this.emit('change', { index: slideNumber });
 
