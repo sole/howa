@@ -64,6 +64,8 @@ module.exports = function(html) {
 			return obj !== undefined;
 		});
 
+		childrenObjects.reverse();
+
 		// Distributing the objects vertically, top to bottom
 		distributeObjects(childrenObjects, { offset: 0, dimension: 'y', direction: -1 });
 
