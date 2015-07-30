@@ -12,12 +12,11 @@ var TrackballControls = require('./vendor/TrackballControls');
 function tweenObject(object, destination, duration) {
 	var tween = object.__internalTween;
 	if(tween) {
-		console.log('stopping existing', tween);
 		tween.stop();
 	}
 
 	tween = new TWEEN.Tween(object);
-	tween.easing(TWEEN.Easing.Elastic.Out);
+	tween.easing(TWEEN.Easing.Exponential.Out);
 	tween.to(destination, duration);
 
 	object.__internalTween = tween;
