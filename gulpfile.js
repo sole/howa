@@ -2,6 +2,7 @@ var path = require('path');
 var gulp = require('gulp');
 var watch = require('gulp-watch');
 var batch = require('gulp-batch');
+var jade = require('gulp-jade');
 var youKnowWhat = require('you-know-what');
 
 var buildDir = path.join(__dirname, 'build');
@@ -23,9 +24,11 @@ gulp.task('build-static-js', function() {
 });
 
 gulp.task('build-static-html', function() {
-	return gulp.src([
-		path.join(clientDir, 'index.html')
-	]).pipe(gulp.dest(buildDir));
+	return gulp.src(
+		path.join(clientDir, 'index.jade')
+	)
+	.pipe(jade())
+	.pipe(gulp.dest(buildDir));
 });
 
 gulp.task('build-static-css', function() {

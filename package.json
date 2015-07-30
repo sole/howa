@@ -16,6 +16,7 @@
   "dependencies": {
     "gulp": "^3.9.0",
     "gulp-batch": "^1.0.5",
+    "gulp-jade": "^1.1.0",
     "gulp-watch": "^4.2.4",
     "make-array": "^0.1.2",
     "n3d-threejs": "^70.0.0",
