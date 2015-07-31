@@ -53,6 +53,7 @@ function Threedees() {
 	this.init = function(htmlSlides) {
 
 		renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+		renderer.setPixelRatio(window.devicePixelRatio);
 		renderer.shadowMapEnabled = true;
 		renderer.shadowMapSoft = true;
 
@@ -87,7 +88,6 @@ function Threedees() {
 			slidePadding: 30
 		});
 
-		var lastSlidePosition = new THREE.Vector3();
 		threeDeeSlides.forEach(function(slide) {
 
 			scene.add(slide);
@@ -99,13 +99,10 @@ function Threedees() {
 			//var sceneAxis = new THREE.AxisHelper(50);
 			//slide.add(sceneAxis);
 
-
 		});
 
 		// Position slides horizontally, LTR
-		// TODO use minimum separation between slide
 		distributeObjects(threeDeeSlides, { dimension: 'x' });
-
 
 		var light = new THREE.DirectionalLight(0xdfebff, 1);
 		light.target.position.set(0, 0, 0);
