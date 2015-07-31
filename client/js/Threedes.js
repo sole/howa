@@ -83,7 +83,9 @@ function Threedees() {
 		var axisHelper = new THREE.AxisHelper(100);
 		scene.add(axisHelper);
 		
-		threeDeeSlides = htmlTo3D(htmlSlides);
+		threeDeeSlides = htmlTo3D(htmlSlides, {
+			slidePadding: 30
+		});
 
 		var lastSlidePosition = new THREE.Vector3();
 		threeDeeSlides.forEach(function(slide) {
@@ -91,11 +93,12 @@ function Threedees() {
 			scene.add(slide);
 			
 			// TMP
-			var bbhelper = new THREE.BoundingBoxHelper(slide, 0xFF00FF);
-			bbhelper.update();
-			var sceneAxis = new THREE.AxisHelper(50);
-			slide.add(sceneAxis);
-			slide.add(bbhelper); // *** TMP
+			//var bbhelper = new THREE.BoundingBoxHelper(slide, 0xFF00FF);
+			//bbhelper.update();
+			//slide.add(bbhelper); // *** TMP
+			//var sceneAxis = new THREE.AxisHelper(50);
+			//slide.add(sceneAxis);
+
 
 		});
 

@@ -44,8 +44,12 @@ function make3DNode(el) {
 	return obj;
 }
 
-module.exports = function(html) {
+module.exports = function(html, options) {
+
+	options = options || {};
 	
+	var slidePadding = options.slidePadding !== undefined ? options.slidePadding : 0;
+
 	var sections = makeArray(html.querySelectorAll('section'));
 	
 	var out = sections.map(function(section) {
@@ -75,6 +79,21 @@ module.exports = function(html) {
 		var contentSize = contentBox.size();
 		var contentCenter = contentBox.center();
 		contentsNode.position.sub(contentCenter);
+
+		// Create box helper including padding so as to 'grow' the slide
+		contentBox.setFromObject(contentsNode);
+		contentBox.expandByScalar(slidePadding);
+		contentSize = contentBox.size();
+		var containerGeom = new THREE.BoxGeometry(contentSize.x, contentSize.y, contentSize.z, 3, 2, 2);
+		var containerMat = new THREE.MeshBasicMaterial({ color: 0xFFFF00, wireframe: true });
+		var containerMesh = new THREE.Mesh(containerGeom, containerMat);
+		containerGeom.computeFaceNormals();
+		var helper = new THREE.FaceNormalsHelper(containerMesh, 30, 0xFFFF00, 1);
+		//var helper = new THREE.EdgesHelper(containerMesh, 0xFFFF00);
+		helper.material.opacity = 0.75;
+		helper.material.transparent = true;
+		sectionNode.add(helper);
+		// sectionNode.add(containerMesh);
 
 		return sectionNode;
 	});
