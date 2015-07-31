@@ -158,10 +158,17 @@ function Threedees() {
 		}, transitionDuration).start();
 
 		var distance = getDistanceToFit(camera, slide, rendererWidth, rendererHeight);
-		console.log('dist', distance);
 		
-		//var dstCamera = slideCenter.add(new THREE.Vector3(0, 0, 50));
 		var dstCamera = slideCenter.add(new THREE.Vector3(0, 0, distance));
+
+		// Make the camera a little more interesting by subtly going randomly left or right
+		var r = 20;
+		var variationX = r * (0.5 - Math.random());
+		var variationY = r * (0.5 - Math.random());
+		dstCamera.x += variationX;
+		dstCamera.y += variationY;
+		dstCamera.z += r;
+
 		tweenObject(camera.position, {
 			x: dstCamera.x,
 			y: dstCamera.y,
