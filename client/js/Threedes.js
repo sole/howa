@@ -23,8 +23,24 @@ function tweenObject(object, destination, duration) {
 	return tween;
 }
 
+function getDistanceToFit(camera, object, canvasWidth, canvasHeight) {
+	// Sort of comes from here http://stackoverflow.com/a/25597836/205721 but slightly modified to fit both width and height
+	var vFOV = camera.fov * Math.PI / 180.0; 
+	var ratio = 2 * Math.tan(vFOV / 2);
+	var screen = ratio * (canvasWidth / canvasHeight); 
+	var box = new THREE.Box3();
+	box.setFromObject(object);
+	var size = box.size();
+    var height = size.y;
+	var width = size.x;
+    var distance = 1.2 * (Math.max(width, height) / screen); // / 4 ;
+	return distance;
+}
+
 function Threedees() {
 	var renderer;
+	var rendererWidth;
+	var rendererHeight;
 	var scene;
 	var camera;
 	var cameraTarget;
@@ -108,6 +124,8 @@ function Threedees() {
 
 	this.resize = function(w, h) {
 		renderer.setSize(w, h);
+		rendererWidth = w;
+		rendererHeight = h;
 		camera.aspect = w / h;
 		camera.updateProjectionMatrix();
 	};
@@ -139,7 +157,11 @@ function Threedees() {
 			z: slideCenter.z
 		}, transitionDuration).start();
 
-		var dstCamera = slideCenter.add(new THREE.Vector3(0, 0, 50));
+		var distance = getDistanceToFit(camera, slide, rendererWidth, rendererHeight);
+		console.log('dist', distance);
+		
+		//var dstCamera = slideCenter.add(new THREE.Vector3(0, 0, 50));
+		var dstCamera = slideCenter.add(new THREE.Vector3(0, 0, distance));
 		tweenObject(camera.position, {
 			x: dstCamera.x,
 			y: dstCamera.y,
