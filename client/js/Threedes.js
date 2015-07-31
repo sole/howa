@@ -93,6 +93,8 @@ function Threedees() {
 			// TMP
 			var bbhelper = new THREE.BoundingBoxHelper(slide, 0xFF00FF);
 			bbhelper.update();
+			var sceneAxis = new THREE.AxisHelper(50);
+			slide.add(sceneAxis);
 			slide.add(bbhelper); // *** TMP
 
 		});

@@ -5,15 +5,29 @@ module.exports = function(THREE) {
 		var dimension = options.dimension !== undefined ? options.dimension : 'x';
 		var direction = options.direction !== undefined ? options.direction : 1;
 
-		objects.forEach(function(obj) {
-			var objBox = new THREE.Box3();
-			objBox.setFromObject(obj);
+		objects.forEach(function(obj, index) {
 
-			var objDimensions = objBox.size();
-			
-			obj.position[dimension] = offset;
+			// Only translate the first one by offset in the dimension
+			// the offset will be transmitted by pushing other objects after this one
+			if(index === 0) {
+				obj.position[dimension] += offset;
+			} else {
+				var previousObject = objects[index - 1];
+				var previousBox = new THREE.Box3();
+				previousBox.setFromObject(previousObject);
 
-			offset += objDimensions[dimension];
+				var objBox = new THREE.Box3();
+				objBox.setFromObject(obj);
+
+				var diff;
+				if(direction > 0) {
+					diff = previousBox.max[dimension] - objBox.min[dimension];
+				} else {
+					diff = previousBox.min[dimension] - objBox.max[dimension];
+				}
+				obj.position[dimension] += diff;
+			}
+
 		});
 	};
 
