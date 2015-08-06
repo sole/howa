@@ -36,9 +36,9 @@ function init() {
 	window.addEventListener('resize', onWindowResized);
 	onWindowResized();
 
-	requestAnimationFrame(render);
-
 	readURL();
+
+	requestAnimationFrame(render);
 
 }
 
@@ -58,9 +58,9 @@ function readURL() {
 		if(isNaN(index)) {
 			index = 0;
 		}
-		slides.show(index);
 	}
-
+	
+	slides.show(index);
 }
 
 function onWindowResized() {

@@ -141,10 +141,10 @@ function Threedees() {
 	};
 
 	this.show = function(slideNumber) {
-		console.log('showing slide', slideNumber);
+
+		currentSlideNumber = slideNumber;
 
 		var slide = threeDeeSlides[slideNumber];
-		console.log('position', slide.position);
 
 		// Need to look at the center of the object
 		var box = new THREE.Box3();
@@ -186,13 +186,16 @@ function Threedees() {
 	};
 
 	this.showNext = function() {
-		currentSlideNumber = ++currentSlideNumber % threeDeeSlides.length;
-		this.show(currentSlideNumber);
+		var nextSlideNumber = (currentSlideNumber + 1) % threeDeeSlides.length;
+		this.show(nextSlideNumber);
 	};
 
 	this.showPrevious = function() {
-		currentSlideNumber = --currentSlideNumber < 0 ? threeDeeSlides.length - 1 : currentSlideNumber;
-		this.show(currentSlideNumber);
+		var previousSlideNumber = currentSlideNumber - 1;
+		if(previousSlideNumber < 0) {
+			previousSlideNumber = threeDeeSlides.length - 1;
+		}
+		this.show(previousSlideNumber);
 	};
 
 }
