@@ -5,11 +5,15 @@ var Slide3D = require('./Slide3D')(THREE);
 
 require('./vendor/helvetiker_regular.typeface.js');
 
+var replacementScenes = {
+	'audio-graph': require('./scenes/audio-graph')
+};
 
 var knownNodes = {
 	'H1': { size: 20 },
 	'H2': { size: 10 },
-	'P': { size: 8 }
+	'P': { size: 8 },
+	'IMG': { replace: true }
 };
 
 var knownNodesKeys = Object.keys(knownNodes);
@@ -19,10 +23,26 @@ function isKnownNode(name) {
 }
 
 function make3DNode(el) {
+	var nodeProperties = knownNodes[el.nodeName];
+	
+	if(nodeProperties.replace) {
+		return make3DNodeReplaced(el, nodeProperties);
+	} else {
+		return make3DNodeText(el, nodeProperties);
+	}
+}
+
+function make3DNodeReplaced(el, nodeProperties) {
+	var key = el.dataset.replace;
+	var ctor = replacementScenes[key];
+
+	return new ctor(THREE);
+}
+
+function make3DNodeText(el, nodeProperties) {
 	var n = Math.round(1 + 3 * Math.random());
 	var colours = [ 0xFF0000, 0x00FF00, 0x00ffFF ];
 	var randColour = (colours.length * Math.random()) | 0;
-	var nodeProperties = knownNodes[el.nodeName];
 
 	// This makes no freaking sense.
 	// "height" is actually the depth (in Z),
@@ -54,10 +74,10 @@ module.exports = function(html, options) {
 	var sections = makeArray(html.querySelectorAll('section'));
 	
 	var out = sections.map(function(section) {
-		var sectionNode = new THREE.Object3D();
+		var slideNode = new Slide3D(); // THREE.Object3D();
 		var contentsNode = new THREE.Object3D();
 		var children = makeArray(section.childNodes);
-
+		
 		// Create and add nodes to section
 		var childrenObjects = children.map(function(el) {
 			if(isKnownNode(el.nodeName)) {
@@ -70,7 +90,7 @@ module.exports = function(html, options) {
 			return obj !== undefined;
 		});
 
-		sectionNode.add(contentsNode);
+		slideNode.add(contentsNode);
 
 		// Distributing the objects vertically, top to bottom
 		distributeObjects(childrenObjects, { offset: 0, dimension: 'y', direction: -1 });
@@ -93,10 +113,12 @@ module.exports = function(html, options) {
 		//var helper = new THREE.EdgesHelper(containerMesh, 0xFFFF00);
 		helper.material.opacity = 0.75;
 		helper.material.transparent = true;
-		sectionNode.add(helper);
-		// sectionNode.add(containerMesh);
+		slideNode.add(helper);
+		// slideNode.add(containerMesh);
+		
+		slideNode.contentsNode = contentsNode;
 
-		return sectionNode;
+		return slideNode;
 	});
 
 

@@ -8,6 +8,14 @@ module.exports = function(THREE) {
 	Slide3D.prototype.constructor = Slide3D;
 
 	Slide3D.prototype.render = function(time) {
+		var contentsNode = this.contentsNode;
+		if(contentsNode) {
+			contentsNode.children.forEach(function(child) {
+				if(child.render) {
+					child.render(time);
+				}
+			});
+		}
 	};
 
 	return Slide3D;
