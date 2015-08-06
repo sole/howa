@@ -46,7 +46,7 @@ function Threedees() {
 	var cameraTarget;
 	var controls;
 	var threeDeeSlides;
-	var currentSlideNumber = 0;
+	var currentSlideNumber = -1;
 
 	EventEmitter.call(this);
 
@@ -134,7 +134,11 @@ function Threedees() {
 
 	this.render = function(time) {
 		controls.update();
-		threeDeeSlides[currentSlideNumber].render(time);
+		// Do not try to render the 'current slide' until we have been
+		// told which slide is it
+		if(currentSlideNumber >= 0) {
+			threeDeeSlides[currentSlideNumber].render(time);
+		}
 		TWEEN.update(time);
 		camera.lookAt(cameraTarget);
 		renderer.render(scene, camera);
@@ -142,9 +146,16 @@ function Threedees() {
 
 	this.show = function(slideNumber) {
 
+		if(currentSlideNumber >= 0 && currentSlideNumber !== slideNumber) {
+			var previousSlide = threeDeeSlides[currentSlideNumber];
+			previousSlide.onDeactivate();
+		}
+
 		currentSlideNumber = slideNumber;
 
 		var slide = threeDeeSlides[slideNumber];
+
+		slide.onActivate();
 
 		// Need to look at the center of the object
 		var box = new THREE.Box3();

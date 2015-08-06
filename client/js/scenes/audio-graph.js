@@ -15,5 +15,13 @@ module.exports = function(THREE, audioContext) {
 		mesh.rotation.y += elapsed;
 	};
 
+	node.onActivate = function() {
+		console.log('activate audio graph scene');
+	};
+
+	node.onDeactivate = function() {
+		console.log('deactivate audio graph scene');
+	};
+
 	return node;
 };
