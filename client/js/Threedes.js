@@ -134,6 +134,7 @@ function Threedees() {
 
 	this.render = function(time) {
 		controls.update();
+		threeDeeSlides[currentSlideNumber].render(time);
 		TWEEN.update(time);
 		camera.lookAt(cameraTarget);
 		renderer.render(scene, camera);

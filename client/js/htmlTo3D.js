@@ -1,6 +1,7 @@
 var THREE = require('n3d-threejs');
 var makeArray = require('make-array');
 var distributeObjects = require('./distribute-objects')(THREE);
+var Slide3D = require('./Slide3D')(THREE);
 
 require('./vendor/helvetiker_regular.typeface.js');
 
