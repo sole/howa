@@ -46,11 +46,15 @@ function Threedees() {
 	var cameraTarget;
 	var controls;
 	var threeDeeSlides;
+	var threeDeeWorld;
 	var currentSlideNumber = -1;
+	var audioContext;
 
 	EventEmitter.call(this);
 
 	this.init = function(htmlSlides) {
+
+		audioContext = new AudioContext();
 
 		renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
 		renderer.setPixelRatio(window.devicePixelRatio);
@@ -84,9 +88,13 @@ function Threedees() {
 		var axisHelper = new THREE.AxisHelper(100);
 		scene.add(axisHelper);
 		
-		threeDeeSlides = htmlTo3D(htmlSlides, {
-			slidePadding: 30
+
+		threeDeeWorld = htmlTo3D(htmlSlides, {
+			slidePadding: 30,
+			audioContext: audioContext
 		});
+
+		threeDeeSlides = threeDeeWorld.slides;
 
 		threeDeeSlides.forEach(function(slide) {
 
@@ -103,6 +111,9 @@ function Threedees() {
 
 		// Position slides horizontally, LTR
 		distributeObjects(threeDeeSlides, { dimension: 'x' });
+
+		// Also connect the audio output of the slides to the destination!
+		threeDeeWorld.audioNode.connect(audioContext.destination);
 
 		var light = new THREE.DirectionalLight(0xdfebff, 1);
 		light.target.position.set(0, 0, 0);

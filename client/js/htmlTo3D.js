@@ -22,24 +22,24 @@ function isKnownNode(name) {
 	return knownNodesKeys.indexOf(name) !== -1;
 }
 
-function make3DNode(el) {
+function make3DNode(el, three, audioContext) {
 	var nodeProperties = knownNodes[el.nodeName];
 	
 	if(nodeProperties.replace) {
-		return make3DNodeReplaced(el, nodeProperties);
+		return make3DNodeReplaced(el, three, audioContext, nodeProperties);
 	} else {
-		return make3DNodeText(el, nodeProperties);
+		return make3DNodeText(el, three, audioContext, nodeProperties);
 	}
 }
 
-function make3DNodeReplaced(el, nodeProperties) {
+function make3DNodeReplaced(el, three, audioContext, nodeProperties) {
 	var key = el.dataset.replace;
 	var ctor = replacementScenes[key];
 
-	return new ctor(THREE);
+	return new ctor(three);
 }
 
-function make3DNodeText(el, nodeProperties) {
+function make3DNodeText(el, THREE, audioContext, nodeProperties) {
 	var n = Math.round(1 + 3 * Math.random());
 	var colours = [ 0xFF0000, 0x00FF00, 0x00ffFF ];
 	var randColour = (colours.length * Math.random()) | 0;
@@ -70,18 +70,20 @@ module.exports = function(html, options) {
 	options = options || {};
 	
 	var slidePadding = options.slidePadding !== undefined ? options.slidePadding : 0;
+	var audioContext = options.audioContext !== undefined ? options.audioContext : new AudioContext();
+	var audioDestinationNode = audioContext.createGain();
 
 	var sections = makeArray(html.querySelectorAll('section'));
 	
-	var out = sections.map(function(section) {
-		var slideNode = new Slide3D(); // THREE.Object3D();
+	var threeDeeSlides = sections.map(function(section) {
+		var slideNode = new Slide3D();
 		var contentsNode = new THREE.Object3D();
 		var children = makeArray(section.childNodes);
 		
 		// Create and add nodes to section
 		var childrenObjects = children.map(function(el) {
 			if(isKnownNode(el.nodeName)) {
-				var obj = make3DNode(el);
+				var obj = make3DNode(el, THREE, audioContext);
 				contentsNode.add(obj);
 				return obj;
 			
@@ -122,5 +124,8 @@ module.exports = function(html, options) {
 	});
 
 
-	return out;
+	return {
+		slides: threeDeeSlides,
+		audioNode: audioDestinationNode
+	};
 };
