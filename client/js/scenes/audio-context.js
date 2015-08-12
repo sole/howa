@@ -1,10 +1,15 @@
 module.exports = function(THREE, audioContext) {
 
+	var WebAudioThx = require('./web-audio-thx');
+	var thx = new WebAudioThx(audioContext);
+	var audioNode = audioContext.createGain();
+	thx.connect(audioNode);
+
 	var node = new THREE.Object3D();
 
 	var mat = new THREE.MeshBasicMaterial({ wireframe: true, color: 0xFF0000 });
-	var n = 200;
-	var geom = new THREE.BoxGeometry(n, n, n);
+	var n = 10;
+	var geom = new THREE.SphereGeometry(n);
 	var mesh = new THREE.Mesh(geom, mat);
 	node.add(mesh);
 
@@ -16,15 +21,17 @@ module.exports = function(THREE, audioContext) {
 	};
 
 	node.onActivate = function() {
-		console.log('activate audio graph scene');
+		console.log('activate audio context scene');
+		thx.start();
 	};
 
 	node.onDeactivate = function() {
-		console.log('deactivate audio graph scene');
+		console.log('deactivate audio context scene');
 	};
 
 	return {
 		graphicNode: node,
-		audioNode: audioContext.createGain() // dummy
+		audioNode: audioNode
 	};
 };
+

@@ -6,6 +6,7 @@ var Slide3D = require('./Slide3D')(THREE);
 require('./vendor/helvetiker_regular.typeface.js');
 
 var replacementScenes = {
+	'audio-context': require('./scenes/audio-context'),
 	'audio-graph': require('./scenes/audio-graph')
 };
 
@@ -28,7 +29,10 @@ function make3DNode(el, three, audioContext) {
 	if(nodeProperties.replace) {
 		return make3DNodeReplaced(el, three, audioContext, nodeProperties);
 	} else {
-		return make3DNodeText(el, three, audioContext, nodeProperties);
+		var textNode = make3DNodeText(el, three, nodeProperties);
+		return {
+			graphicNode: textNode
+		};
 	}
 }
 
@@ -36,10 +40,10 @@ function make3DNodeReplaced(el, three, audioContext, nodeProperties) {
 	var key = el.dataset.replace;
 	var ctor = replacementScenes[key];
 
-	return new ctor(three);
+	return new ctor(three, audioContext);
 }
 
-function make3DNodeText(el, THREE, audioContext, nodeProperties) {
+function make3DNodeText(el, THREE, nodeProperties) {
 	var n = Math.round(1 + 3 * Math.random());
 	var colours = [ 0xFF0000, 0x00FF00, 0x00ffFF ];
 	var randColour = (colours.length * Math.random()) | 0;
@@ -84,8 +88,11 @@ module.exports = function(html, options) {
 		var childrenObjects = children.map(function(el) {
 			if(isKnownNode(el.nodeName)) {
 				var obj = make3DNode(el, THREE, audioContext);
-				contentsNode.add(obj);
-				return obj;
+				contentsNode.add(obj.graphicNode);
+				if(obj.audioNode) {
+					obj.audioNode.connect(audioDestinationNode);
+				}
+				return obj.graphicNode;
 			
 			}
 		}).filter(function(obj) {
