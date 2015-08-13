@@ -8,8 +8,8 @@ module.exports = function(audioContext) {
 	out.gain.value = 0.5;
 
 	var oscillators = [];
-	var numberOfOscillators = 3; // 30;
-	var soundLength = 1;
+	var numberOfOscillators = 30; // 30;
+	var soundLength = 26;
 
 	function getRandomInt(min, max) {
 		return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -23,12 +23,15 @@ module.exports = function(audioContext) {
 		for(var i = 0; i < amount; i++) {
 			var osc = audioContext.createOscillator();
 			osc.type = 'sawtooth';
-			osc.frequency.setValueAtTime(getRandomInt(200, 400), now);
+			var freq = getRandomInt(200, 400);
+			osc.frequency.value = freq;
+			osc.frequency.setValueAtTime(freq, now);
 			oscillators.push(osc);
 		}
 		oscillators.sort(); // TODO: why and based on which criteria
 
 	}
+
 
 	function makeFilter(osc) {
 		// TODO actually implement
@@ -51,11 +54,36 @@ module.exports = function(audioContext) {
 
 			var oscGain = audioContext.createGain();
 
-			// TODO addWobble(osc)
+			// TODO addWobble(osc) // but it doesn't seem to be used/doing anything at all anyway ?
 
 			osc.detune.setValueAtTime(getRandomInt(-10, 10), when);
 
-			// TODO block of if's
+			var finalFreq;
+			var finalGain;
+			var duration = 2 * soundLength / 3;
+			var freqEnvEnd = when + duration;
+
+			if(index % 2 === 0) {
+				finalFreq = fundamental * 2;
+				freqEnvEnd += 0.01;
+			} else if(index % 3 === 0) {
+				finalFreq = fundamental * 4;
+				freqEnvEnd += 0.02;
+			} else if(index % 4 === 0) {
+				finalFreq = fundamental * 8;
+				freqEnvEnd += 0.022;
+			} else if(index % 5 === 0) {
+				finalFreq = fundamental * 16;
+				freqEnvEnd -= 0.022;
+			} else if(index % 6 === 0) {
+				finalFreq = fundamental * 32;
+				freqEnvEnd -= 0.01;
+			} else {
+				finalFreq = fundamental * 64;
+			}
+
+			osc.frequency.linearRampToValueAtTime(finalFreq, freqEnvEnd);
+			// TODO oscGain.gain.setValueAtTime(finalGain, when);
 			
 			var filter = makeFilter(osc);
 			
