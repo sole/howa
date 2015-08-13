@@ -45,7 +45,7 @@ module.exports = function(audioContext) {
 		var outNode = audioContext.createGain();
 
 		// tmp
-		outNode.gain.value = 0.1;
+		//outNode.gain.value = 0.1;
 
 		oscillators.forEach(function(osc, index) {
 
@@ -102,8 +102,24 @@ module.exports = function(audioContext) {
 
 		});
 
-		//outNode.gain.setValueAtTime(1.0 / oscillators.length, when);
-		//TODO outNode gain envelope
+		var numOscillators = oscillators.length;
+		
+		
+		outNode.gain.setValueAtTime(0, when);
+		outNode.gain.linearRampToValueAtTime(0.25 / numOscillators, when + soundLength / 3);
+		outNode.gain.setValueAtTime(0.25 / numOscillators, when + soundLength / 3);
+		outNode.gain.setValueAtTime(0.25 / numOscillators, when + soundLength / 2);
+
+		// Ramp to max value
+		outNode.gain.linearRampToValueAtTime(1.0 / numOscillators, when + 2 * soundLength / 3);
+
+		// Set max value before fade
+		outNode.gain.linearRampToValueAtTime(1.0 / numOscillators, when + soundLength - 5);
+
+		// Fade out
+		outNode.gain.linearRampToValueAtTime(0, when + soundLength - 4);
+
+		
 
 		outNode.connect(out);
 
