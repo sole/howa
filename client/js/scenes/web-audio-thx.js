@@ -59,7 +59,7 @@ module.exports = function(audioContext) {
 			osc.detune.setValueAtTime(getRandomInt(-10, 10), when);
 
 			var finalFreq;
-			var finalGain;
+			var finalGain = 1.0;
 			var duration = 2 * soundLength / 3;
 			var freqEnvEnd = when + duration;
 
@@ -69,21 +69,26 @@ module.exports = function(audioContext) {
 			} else if(index % 3 === 0) {
 				finalFreq = fundamental * 4;
 				freqEnvEnd += 0.02;
+				finalGain = 0.9;
 			} else if(index % 4 === 0) {
 				finalFreq = fundamental * 8;
 				freqEnvEnd += 0.022;
+				finalGain = 0.8;
 			} else if(index % 5 === 0) {
 				finalFreq = fundamental * 16;
 				freqEnvEnd -= 0.022;
+				finalGain = 0.7;
 			} else if(index % 6 === 0) {
 				finalFreq = fundamental * 32;
 				freqEnvEnd -= 0.01;
+				finalGain = 0.6;
 			} else {
 				finalFreq = fundamental * 64;
+				finalGain = 0.3;
 			}
 
 			osc.frequency.linearRampToValueAtTime(finalFreq, freqEnvEnd);
-			// TODO oscGain.gain.setValueAtTime(finalGain, when);
+			oscGain.gain.setValueAtTime(finalGain, when);
 			
 			var filter = makeFilter(osc);
 			
