@@ -103,18 +103,18 @@ module.exports = function(audioContext) {
 		});
 
 		var numOscillators = oscillators.length;
-		
+		var maxGain = 20.0 / numOscillators; // 1.0 / nOsc is probably too low
 		
 		outNode.gain.setValueAtTime(0, when);
-		outNode.gain.linearRampToValueAtTime(0.25 / numOscillators, when + soundLength / 3);
-		outNode.gain.setValueAtTime(0.25 / numOscillators, when + soundLength / 3);
-		outNode.gain.setValueAtTime(0.25 / numOscillators, when + soundLength / 2);
+		outNode.gain.linearRampToValueAtTime(maxGain / 4, when + soundLength / 3);
+		outNode.gain.setValueAtTime(maxGain / 4, when + soundLength / 3);
+		outNode.gain.setValueAtTime(maxGain / 4, when + soundLength / 2);
 
 		// Ramp to max value
-		outNode.gain.linearRampToValueAtTime(1.0 / numOscillators, when + 2 * soundLength / 3);
+		outNode.gain.linearRampToValueAtTime(maxGain, when + 2 * soundLength / 3);
 
 		// Set max value before fade
-		outNode.gain.linearRampToValueAtTime(1.0 / numOscillators, when + soundLength - 5);
+		outNode.gain.linearRampToValueAtTime(maxGain, when + soundLength - 5);
 
 		// Fade out
 		outNode.gain.linearRampToValueAtTime(0, when + soundLength - 4);
