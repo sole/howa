@@ -27,6 +27,7 @@ module.exports = function(THREE, audioContext) {
 
 	node.onDeactivate = function() {
 		console.log('deactivate audio context scene');
+		thx.stop();
 	};
 
 	return {

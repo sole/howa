@@ -5,7 +5,7 @@
 // ! ! ! ! ! ! ! ! !
 module.exports = function(audioContext) {
 	var out = audioContext.createGain();
-	out.gain.value = 0.5;
+	out.gain.setValueAtTime(0.5, audioContext.currentTime);
 
 	var oscillators = [];
 	var numberOfOscillators = 30; // 30;
@@ -101,6 +101,8 @@ module.exports = function(audioContext) {
 			filter.connect(oscGain);
 			oscGain.connect(outNode);
 
+			osc.__endNode = oscGain;
+
 			osc.start(when);
 			osc.stop(when + soundLength);
 
@@ -130,11 +132,31 @@ module.exports = function(audioContext) {
 	}
 
 	function stopOscillators(timeOffset) {
+		var now = audioContext.currentTime;
+		var fadeOutLength = 0.5;
+		var when = now + timeOffset + fadeOutLength;
+		var thoseOscillators = [];
+
+		oscillators.forEach(function(osc) {
+			thoseOscillators.push(osc);
+		});
+
+		out.gain.linearRampToValueAtTime(0, when);
+
+		setTimeout(function() {
+			var then = audioContext.currentTime;
+			thoseOscillators.forEach(function(osc) {
+				osc.stop(then);
+				osc.disconnect();
+				osc.__endNode.disconnect();
+			});
+		}, (fadeOutLength + 0.3) * 1000);
 	}
 	
 	out.start = function() {
 		console.log('starting THX');
 
+		out.gain.setValueAtTime(0.5, audioContext.currentTime);
 		createOscillators(numberOfOscillators);
 		playOscillators(0, soundLength);
 	};
