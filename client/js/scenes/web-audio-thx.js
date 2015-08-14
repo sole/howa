@@ -33,9 +33,16 @@ module.exports = function(audioContext) {
 	}
 
 
-	function makeFilter(osc) {
-		// TODO actually implement
-		return audioContext.createGain();
+	function makeFilter(osc, when, envLength) {
+		var filter = audioContext.createBiquadFilter();
+		filter.type = 'lowpass';
+		
+		if(osc.frequency.value > 300) {
+			filter.frequency.setValueAtTime(300, when);
+			filter.frequency.linearRampToValueAtTime(500, when + envLength / 2);
+			filter.frequency.linearRampToValueAtTime(20000, when + 1.5 * envLength / 3);
+		}
+		return filter;
 	}
 
 	function playOscillators(timeOffset, soundLength) {
@@ -43,9 +50,6 @@ module.exports = function(audioContext) {
 		var when = audioContext.currentTime + timeOffset;
 		var fundamental = 20.02357939482212;
 		var outNode = audioContext.createGain();
-
-		// tmp
-		//outNode.gain.value = 0.1;
 
 		oscillators.forEach(function(osc, index) {
 
@@ -90,7 +94,7 @@ module.exports = function(audioContext) {
 			osc.frequency.linearRampToValueAtTime(finalFreq, freqEnvEnd);
 			oscGain.gain.setValueAtTime(finalGain, when);
 			
-			var filter = makeFilter(osc);
+			var filter = makeFilter(osc, when, soundLength);
 			
 			osc.connect(panner);
 			panner.connect(filter);
