@@ -1,30 +1,37 @@
 module.exports = function(THREE, audioContext) {
 
-	var node = new THREE.Object3D();
+	var Renderable = require('../Renderable')(THREE);
 
-	var mat = new THREE.MeshBasicMaterial({ wireframe: true, color: 0xFF0000 });
-	var n = 200;
-	var geom = new THREE.BoxGeometry(n, n, n);
-	var mesh = new THREE.Mesh(geom, mat);
-	node.add(mesh);
+	function SceneAudioGraph() {
 
-	var lastTime = 0;
-	node.render = function(time) {
-		var elapsed = (time - lastTime) * 0.001;
-		lastTime = time;
-		mesh.rotation.y += elapsed;
-	};
+		Renderable.call(this, audioContext);
 
-	node.onActivate = function() {
-		console.log('activate audio graph scene');
-	};
+		var mat = new THREE.MeshBasicMaterial({ wireframe: true, color: 0xFF0000 });
+		var n = 100;
+		var geom = new THREE.BoxGeometry(n, n, n);
+		var mesh = new THREE.Mesh(geom, mat);
+		this.add(mesh);
 
-	node.onDeactivate = function() {
-		console.log('deactivate audio graph scene');
-	};
+		var lastTime = 0;
+		this.render = function(time) {
+			var elapsed = (time - lastTime) * 0.001;
+			lastTime = time;
+			mesh.rotation.y += elapsed;
+		};
 
-	return {
-		graphicNode: node,
-		audioNode: audioContext.createGain() // dummy
-	};
+		this.activate = function() {
+			console.log('activate audio graph scene');
+		};
+
+		this.deactivate = function() {
+			console.log('deactivate audio graph scene');
+		};
+
+	}
+
+	SceneAudioGraph.prototype = Object.create(Renderable.prototype);
+	SceneAudioGraph.prototype.constructor = SceneAudioGraph;
+
+	return SceneAudioGraph;
+	
 };

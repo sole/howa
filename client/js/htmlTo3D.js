@@ -1,7 +1,7 @@
 var THREE = require('n3d-threejs');
 var makeArray = require('make-array');
 var distributeObjects = require('./distribute-objects')(THREE);
-var Slide3D = require('./Slide3D')(THREE);
+var Renderable = require('./Renderable')(THREE);
 
 require('./vendor/helvetiker_regular.typeface.js');
 
@@ -30,17 +30,16 @@ function make3DNode(el, three, audioContext) {
 		return make3DNodeReplaced(el, three, audioContext, nodeProperties);
 	} else {
 		var textNode = make3DNodeText(el, three, nodeProperties);
-		return {
-			graphicNode: textNode
-		};
+		return textNode;
 	}
 }
 
 function make3DNodeReplaced(el, three, audioContext, nodeProperties) {
 	var key = el.dataset.replace;
-	var ctor = replacementScenes[key];
-
-	return new ctor(three, audioContext);
+	console.log('oopsi');
+	var ctor = replacementScenes[key](three, audioContext);
+console.log(ctor);
+	return new ctor();
 }
 
 function make3DNodeText(el, THREE, nodeProperties) {
@@ -78,22 +77,24 @@ module.exports = function(html, options) {
 	var audioDestinationNode = audioContext.createGain();
 
 	var sections = makeArray(html.querySelectorAll('section'));
-	
+
 	var threeDeeSlides = sections.map(function(section) {
-		var slideNode = new Slide3D();
+		var slideNode = new Renderable(audioContext);
+		// We want a node inside the slide node for centering everything inside it
 		var contentsNode = new THREE.Object3D();
+
+		// TODO rename these variables, they're not explanatory
 		var children = makeArray(section.childNodes);
 		
 		// Create and add nodes to section
 		var childrenObjects = children.map(function(el) {
 			if(isKnownNode(el.nodeName)) {
 				var obj = make3DNode(el, THREE, audioContext);
-				contentsNode.add(obj.graphicNode);
+				contentsNode.add(obj);
 				if(obj.audioNode) {
-					obj.audioNode.connect(audioDestinationNode);
+					obj.audioNode.connect(slideNode.audioNode);
 				}
-				return obj.graphicNode;
-			
+				return obj;
 			}
 		}).filter(function(obj) {
 			return obj !== undefined;
@@ -125,14 +126,8 @@ module.exports = function(html, options) {
 		slideNode.add(helper);
 		// slideNode.add(containerMesh);
 		
-		slideNode.contentsNode = contentsNode;
-
 		return slideNode;
 	});
 
-
-	return {
-		slides: threeDeeSlides,
-		audioNode: audioDestinationNode
-	};
+	return threeDeeSlides;
 };

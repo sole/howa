@@ -1,38 +1,44 @@
 module.exports = function(THREE, audioContext) {
 
-	var WebAudioThx = require('./web-audio-thx');
-	var thx = new WebAudioThx(audioContext);
-	var audioNode = audioContext.createGain();
-	thx.connect(audioNode);
+	var Renderable = require('../Renderable')(THREE);
+	
+	function SceneAudioContext() {
+		
+		var WebAudioThx = require('./web-audio-thx');
 
-	var node = new THREE.Object3D();
+		Renderable.call(this, audioContext);
 
-	var mat = new THREE.MeshBasicMaterial({ wireframe: true, color: 0xFF0000 });
-	var n = 10;
-	var geom = new THREE.SphereGeometry(n);
-	var mesh = new THREE.Mesh(geom, mat);
-	node.add(mesh);
+		this.thx = new WebAudioThx(audioContext);
+		this.thx.connect(this.audioNode);
 
-	var lastTime = 0;
-	node.render = function(time) {
-		var elapsed = (time - lastTime) * 0.001;
-		lastTime = time;
-		mesh.rotation.y += elapsed;
-	};
+		var mat = new THREE.MeshBasicMaterial({ wireframe: true, color: 0xFF0000 });
+		var n = 10;
+		var geom = new THREE.SphereGeometry(n);
+		var mesh = new THREE.Mesh(geom, mat);
+		this.add(mesh);
 
-	node.onActivate = function() {
-		console.log('activate audio context scene');
-		thx.start();
-	};
+		var lastTime = 0;
+		this.render = function(time) {
+			var elapsed = (time - lastTime) * 0.001;
+			lastTime = time;
+			mesh.rotation.y += elapsed;
+		};
+	
+		this.activate = function() {
+			this.thx.start();
 
-	node.onDeactivate = function() {
-		console.log('deactivate audio context scene');
-		thx.stop();
-	};
+		};
 
-	return {
-		graphicNode: node,
-		audioNode: audioNode
-	};
+		this.deactivate = function() {
+			this.thx.stop();
+		};
+
+	}
+
+	SceneAudioContext.prototype = Object.create(Renderable.prototype);
+	SceneAudioContext.prototype.constructor = SceneAudioContext;
+
+	return SceneAudioContext;
+
 };
 

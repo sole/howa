@@ -1,6 +1,8 @@
-module.exports = function(THREE) {
+// var Renderable = require('./Renderable');
 
-	function Slide3D() {
+module.exports = function(THREE, audioContext) {
+
+	/*function Slide3D() {
 		THREE.Object3D.call(this);
 	}
 
@@ -36,7 +38,12 @@ module.exports = function(THREE) {
 				child.onDeactivate();
 			}
 		});
-	};
+	};*/
+
+	function Slide3D() {
+	}
+
+	Renderable.call(Slide3D.prototype, THREE, audioContext);
 
 	return Slide3D;
 

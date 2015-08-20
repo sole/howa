@@ -55,6 +55,7 @@ function Threedees() {
 	this.init = function(htmlSlides) {
 
 		audioContext = new AudioContext();
+		limiter = audioContext.createDynamicsCompressor();
 
 		renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
 		renderer.setPixelRatio(window.devicePixelRatio);
@@ -89,16 +90,19 @@ function Threedees() {
 		scene.add(axisHelper);
 		
 
-		threeDeeWorld = htmlTo3D(htmlSlides, {
+		threeDeeSlides = htmlTo3D(htmlSlides, {
 			slidePadding: 30,
 			audioContext: audioContext
 		});
 
-		threeDeeSlides = threeDeeWorld.slides;
+		//threeDeeSlides = threeDeeWorld.slides;
 
 		threeDeeSlides.forEach(function(slide) {
 
 			scene.add(slide);
+
+			// TODO Insert panner node per slide using each slide absolute world position
+			slide.audioNode.connect(limiter);
 			
 			// TMP
 			//var bbhelper = new THREE.BoundingBoxHelper(slide, 0xFF00FF);
@@ -113,7 +117,7 @@ function Threedees() {
 		distributeObjects(threeDeeSlides, { dimension: 'x' });
 
 		// Also connect the audio output of the slides to the destination!
-		threeDeeWorld.audioNode.connect(audioContext.destination);
+		limiter.connect(audioContext.destination);
 
 		var light = new THREE.DirectionalLight(0xdfebff, 1);
 		light.target.position.set(0, 0, 0);
@@ -159,14 +163,14 @@ function Threedees() {
 
 		if(currentSlideNumber >= 0 && currentSlideNumber !== slideNumber) {
 			var previousSlide = threeDeeSlides[currentSlideNumber];
-			previousSlide.onDeactivate();
+			previousSlide.deactivate();
 		}
 
 		currentSlideNumber = slideNumber;
 
 		var slide = threeDeeSlides[slideNumber];
 
-		slide.onActivate();
+		slide.activate();
 
 		// Need to look at the center of the object
 		var box = new THREE.Box3();
@@ -199,9 +203,6 @@ function Threedees() {
 			y: dstCamera.y,
 			z: dstCamera.z
 		}, transitionDuration).start();
-
-		//cameraTarget.copy(slideCenter);
-		//camera.position.copy(dstCamera);
 
 		this.emit('change', { index: slideNumber });
 
