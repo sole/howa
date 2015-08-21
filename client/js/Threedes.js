@@ -116,6 +116,13 @@ function Threedees() {
 		// Position slides horizontally, LTR
 		distributeObjects(threeDeeSlides, { dimension: 'x' });
 
+		// Apply individual offsets
+		threeDeeSlides.forEach(function(slide) {
+			if(slide.options.offsetY) {
+				slide.position.y += slide.options.offsetY;
+			}
+		});
+
 		// Also connect the audio output of the slides to the destination!
 		limiter.connect(audioContext.destination);
 

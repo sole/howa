@@ -87,13 +87,19 @@ module.exports = function(html, options) {
 		var childElements = makeArray(sectionElement.childNodes);
 		
 		// Slides might have some options, let's parse them here
+		var data = sectionElement.dataset;
 		var slideOptions = {};
-
-		if(sectionElement.dataset.transitionDuration) {
-			// In seconds - we'll convert to milliseconds
-			slideOptions.transitionDuration = sectionElement.dataset.transitionDuration * 1000;
-		}
 		slideObject.options = slideOptions;
+
+
+		if(data.transitionDuration) {
+			// In seconds - we'll convert to milliseconds
+			slideOptions.transitionDuration = data.transitionDuration * 1000;
+		}
+
+		if(data.offsetY) {
+			slideOptions.offsetY = data.offsetY * 1.0;
+		}
 		
 		// Convert known element types to their counterpart 3d object representation
 		var childObjects = [];
