@@ -109,12 +109,32 @@ module.exports = function(html, options) {
 
 		var contentBox = new THREE.Box3();
 		contentBox.setFromObject(contentsObject);
+
+		// Careful here, if there are no objects inside the object, three.js creates a box
+		// with "Infinity" dimensions... which messes up with everything else
+		// TODO: find fix for three.js: on the setFromObject method need to detect Inf, -Inf, replace with 0, 0
+		
+		var boxMin = contentBox.min;
+		var boxMax = contentBox.max;
+
+		function equals(vec, value) {
+			return (vec.x === value) && (vec.y === value) && (vec.z === value);
+		}
+
+		var minInf = equals(boxMin, Infinity);
+		var maxInf = equals(boxMax, -Infinity);
+
+		if(minInf && maxInf) {
+			boxMin.set(0, 0, 0);
+			boxMax.set(0, 0, 0);
+		}
+
 		var contentSize = contentBox.size();
 		var contentCenter = contentBox.center();
+		
 		contentsObject.position.sub(contentCenter);
-
+	
 		// Create box helper including padding so as to 'grow' the slide
-		contentBox.setFromObject(contentsObject);
 		contentBox.expandByScalar(slidePadding);
 		contentSize = contentBox.size();
 		var containerGeom = new THREE.BoxGeometry(contentSize.x, contentSize.y, contentSize.z, 3, 2, 2);
