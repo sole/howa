@@ -84,10 +84,10 @@ module.exports = function(html, options) {
 		var contentsNode = new THREE.Object3D();
 
 		// TODO rename these variables, they're not explanatory
-		var children = makeArray(section.childNodes);
+		var childElements = makeArray(section.childNodes);
 		
 		// Create and add nodes to section
-		var childrenObjects = children.map(function(el) {
+		var childObjects = childElements.map(function(el) {
 			if(isKnownNode(el.nodeName)) {
 				var obj = make3DNode(el, THREE, audioContext);
 				contentsNode.add(obj);
@@ -103,7 +103,7 @@ module.exports = function(html, options) {
 		slideNode.add(contentsNode);
 
 		// Distributing the objects vertically, top to bottom
-		distributeObjects(childrenObjects, { offset: 0, dimension: 'y', direction: -1 });
+		distributeObjects(childObjects, { offset: 0, dimension: 'y', direction: -1 });
 
 		var contentBox = new THREE.Box3();
 		contentBox.setFromObject(contentsNode);
