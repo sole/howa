@@ -76,7 +76,7 @@ module.exports = function(html, options) {
 	// Each slide is represented by a <section> element in HTML
 	var slideElements = makeArray(html.querySelectorAll('section'));
 
-	var slideObjects = slideElements.map(function(section) {
+	var slideObjects = slideElements.map(function(sectionElement) {
 
 		var slideObject = new Renderable(audioContext);
 		
@@ -84,7 +84,16 @@ module.exports = function(html, options) {
 		// `contentsObject` so we can then center them inside the slide object more easily
 		var contentsObject = new THREE.Object3D();
 
-		var childElements = makeArray(section.childNodes);
+		var childElements = makeArray(sectionElement.childNodes);
+		
+		// Slides might have some options, let's parse them here
+		var slideOptions = {};
+
+		if(sectionElement.dataset.transitionDuration) {
+			// In seconds - we'll convert to milliseconds
+			slideOptions.transitionDuration = sectionElement.dataset.transitionDuration * 1000;
+		}
+		slideObject.options = slideOptions;
 		
 		// Convert known element types to their counterpart 3d object representation
 		var childObjects = [];

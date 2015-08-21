@@ -176,9 +176,8 @@ function Threedees() {
 		var box = new THREE.Box3();
 		box.setFromObject(slide);
 
-		var transitionDuration = 1500;
+		var transitionDuration = slide.options.transitionDuration !== undefined ? slide.options.transitionDuration : 1500;
 		var slideCenter = box.center();
-
 
 		tweenObject(cameraTarget, {
 			x: slideCenter.x,
