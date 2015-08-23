@@ -8,12 +8,13 @@ module.exports = function(THREE, audioContext) {
 		
 		Renderable.call(this, audioContext);
 
-		var birds = [], boids = [];
+		var birds = [];
+		var boids = [];
 		var maxGain = 0.25;
 		var oscillator;
 		var gain = audioContext.createGain();
 		var stereoPanner = audioContext.createStereoPanner();
-		
+
 		gain.connect(stereoPanner);
 
 		var mat = new THREE.MeshBasicMaterial({ wireframe: true, color: 0xFF0000 });
@@ -27,7 +28,7 @@ module.exports = function(THREE, audioContext) {
 		
 		var birdMaterial = new THREE.MeshBasicMaterial({ color:Math.random() * 0xffffff, side: THREE.DoubleSide });
 
-		for ( var i = 0; i < 200; i ++ ) {
+		for ( var i = 0; i < 20; i ++ ) {
 
 			var boid = new Boid();
 			boids.push(boid);
@@ -39,6 +40,9 @@ module.exports = function(THREE, audioContext) {
 			boid.velocity.z = Math.random() * 2 - 1;
 			boid.setAvoidWalls(true);
 			boid.setWorldSize(500, 500, 400);
+
+			var panner = audioContext.createPanner();
+			boid.panner = panner;
 
 			var bird = new THREE.Mesh(new BirdGeometry(), birdMaterial);
 			birds.push(bird);
@@ -57,14 +61,16 @@ module.exports = function(THREE, audioContext) {
 			mesh.position.x = pos * 40;
 			stereoPanner.pan.setValueAtTime(pos, now);
 
-
 			for ( var i = 0, il = birds.length; i < il; i++ ) {
 
-				boid = boids[ i ];
-				boid.run( boids );
+				var boid = boids[i];
+				boid.run(boids);
+				var position = boid.position;
 
-				bird = birds[ i ];
-				bird.position.copy( boids[ i ].position );
+				var bird = birds[i];
+				bird.position.copy(position);
+
+				boid.panner.setPosition(position.x, position.y, position.z);
 
 				//color = bird.material.color;
 				//color.r = color.g = color.b = ( 500 - bird.position.z ) / 1000;
