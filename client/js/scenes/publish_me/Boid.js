@@ -12,6 +12,10 @@ module.exports = function(THREE) {
 		this.velocity = new THREE.Vector3();
 		_acceleration = new THREE.Vector3();
 
+		this.setMaxSpeed = function(value) {
+			_maxSpeed = value;
+		};
+
 		this.setGoal = function ( target ) {
 
 			_goal = target;

@@ -208,7 +208,11 @@ function Threedees() {
 			x: dstCamera.x,
 			y: dstCamera.y,
 			z: dstCamera.z
-		}, transitionDuration).start();
+		}, transitionDuration)
+		.onUpdate(function() {
+			audioContext.listener.setPosition(this.x, this.y, this.z);
+		})
+		.start();
 
 		this.emit('change', { index: slideNumber });
 
