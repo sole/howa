@@ -8,7 +8,8 @@ require('./vendor/helvetiker_regular.typeface.js');
 var replacementScenes = {
 	'audio-context': require('./scenes/audio-context'),
 	'audio-graph': require('./scenes/audio-graph'),
-	'stereo-panner': require('./scenes/stereo-panner')
+	'stereo-panner': require('./scenes/stereo-panner'),
+	'panner': require('./scenes/panner')
 };
 
 var knownNodes = {
