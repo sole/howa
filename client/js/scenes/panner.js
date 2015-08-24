@@ -4,20 +4,33 @@ module.exports = function(THREE, audioContext) {
 	var Boid = require('./publish_me/Boid')(THREE);
 	var BirdGeometry = require('./publish_me/BirdGeometry')(THREE);
 	var SamplePlayer = require('openmusic-sample-player');
-		var fs = require('fs');
-	var birdSample = fs.readFileSync(__dirname + '/bird.wav');
-	var birdSampleArrayBuffer = birdSample.toArrayBuffer();
-	var birdSampleAudioBuffer = null;
+	var fs = require('fs');
+	var Promise = require('es6-promise').Promise;
+	
+	var birdSample1 = fs.readFileSync(__dirname + '/birds/bird01.ogg');
+	var birdSample2 = fs.readFileSync(__dirname + '/birds/bird02.ogg');
+	var birdSample3 = fs.readFileSync(__dirname + '/birds/bird03.ogg');
+	var birdSample4 = fs.readFileSync(__dirname + '/birds/bird04.ogg');
+	
+	var samples = [ birdSample1, birdSample2, birdSample3, birdSample4 ];
+	var decodedBirdSamples = [];
 
 	function getRandom(maxValue) {
 		return maxValue * (Math.random() - 0.5);
+	}
+
+	function decodeBirdSamples(audioContext, binarySamples) {
+		var decodedSamples = binarySamples.map(function(binary) {
+			return audioContext.decodeAudioData(binary.toArrayBuffer());
+		});
+		return Promise.all(decodedSamples);
 	}
 
 	function Panner() {
 
 		Renderable.call(this, audioContext);
 
-		var maxGain = 0.25;
+		var maxGain = 0.95;
 		var birds = [];
 		var boids = [];
 		var worldPosition = new THREE.Vector3();
@@ -27,65 +40,79 @@ module.exports = function(THREE, audioContext) {
 		var birdSink = audioContext.createGain();
 		birdSink.gain.setValueAtTime(maxGain, audioContext.currentTime);
 
-		audioContext.decodeAudioData(birdSampleArrayBuffer, onSampleBufferDecoded, function(err) {
-			console.error('FAIL decoding audio data aaagh');
+		decodeBirdSamples(audioContext, samples).then(function(buffers) {
+			decodedBirdSamples = buffers;
+			initBirds(buffers);
 		});
 
-		var birdMaterial = new THREE.MeshBasicMaterial({ color: 0xff00ff, side: THREE.DoubleSide });
-		var maxSpeed = 0.25;
-		var m = 200;
-		var wide = m * 2;
-		var now = audioContext.currentTime;
+		// FIXME: Urgh, if I don't add this then the position of this object is y = Infinity
+		// - probably same bug as with the bounding box size
+		var dummy = new THREE.Mesh(new BirdGeometry(), new THREE.MeshBasicMaterial({ color: 0xFFFF00, opacity: 0.0 }));
+		dummy.material.transparent = true;
+		this.add(dummy);
+		// ---
 
-		for ( var i = 0; i < 50; i ++ ) {
+		var scene = this;
 
-			var boid = new Boid();
-			boids.push(boid);
-			boid.setMaxSpeed(2);
-			boid.position.x = getRandom(wide);
-			boid.position.y = getRandom(m);
-			boid.position.z = getRandom(m);
-			boid.velocity.x = getRandom(maxSpeed);
-			boid.velocity.y = getRandom(maxSpeed);
-			boid.velocity.z = getRandom(maxSpeed);
-			boid.setAvoidWalls(true);
-
-			boid.setWorldSize(wide, m, m);
-
-			var panner = audioContext.createPanner();
-			boid.panner = panner;
-			panner.connect(birdSink);
-
-			var samplePlayer = SamplePlayer(audioContext);
-			samplePlayer.connect(panner);
-			//samplePlayer.connect(birdSink);
+		function initBirds(soundBuffers) {
 			
-			boid.samplePlayer = samplePlayer;
-			if(birdSampleAudioBuffer !== null) {
-				samplePlayer.buffer = birdSampleAudioBuffer;
+			var birdMaterial = new THREE.MeshBasicMaterial({ color: 0xff00ff, side: THREE.DoubleSide });
+			var maxSpeed = 0.25;
+			var m = 200;
+			var wide = m * 2;
+			var now = audioContext.currentTime;
+			var numSounds = soundBuffers.length;
+			var soundIndex = 0;
+
+			for ( var i = 0; i < 50; i ++ ) {
+
+				var boid = new Boid();
+				boids.push(boid);
+				boid.setMaxSpeed(2);
+				boid.position.x = getRandom(wide);
+				boid.position.y = getRandom(m);
+				boid.position.z = getRandom(m);
+				boid.velocity.x = getRandom(maxSpeed);
+				boid.velocity.y = getRandom(maxSpeed);
+				boid.velocity.z = getRandom(maxSpeed);
+				boid.setAvoidWalls(true);
+
+				boid.setWorldSize(wide, m, m);
+
+				var panner = audioContext.createPanner();
+				boid.panner = panner;
+				panner.connect(birdSink);
+
+				var samplePlayer = SamplePlayer(audioContext);
+				samplePlayer.connect(panner);
+				//samplePlayer.connect(birdSink);
+				
+				boid.samplePlayer = samplePlayer;
+				samplePlayer.buffer = soundBuffers[soundIndex];
+
+				// go to next sound but also make sure we don't go out of bounds
+				soundIndex++;
+				soundIndex = soundIndex % numSounds;
+
+				boid.lastTimePlayed = now + i + 3 * Math.random();
+
+				var bird = new THREE.Mesh(new BirdGeometry(), birdMaterial);
+				birds.push(bird);
+				bird.phase = Math.floor( Math.random() * 62.83 );
+				scene.add(bird);
+
 			}
 
-			boid.lastTimePlayed = now + i;
-
-			var bird = new THREE.Mesh(new BirdGeometry(), birdMaterial);
-			birds.push(bird);
-			bird.phase = Math.floor( Math.random() * 62.83 );
-			this.add(bird);
-
-		}
-
-		function onSampleBufferDecoded(buffer) {
-			console.log('bird sample decoded');
-			birdSampleAudioBuffer = buffer;
-
-			boids.forEach(function(boid) {
-				var player = boid.samplePlayer;
-				player.buffer = buffer;
-			});
 		}
 
 		this.render = function(time) {
 			var now = audioContext.currentTime;
+
+			//if(birds.length !== boids.length ) {
+			//	return;
+			//}
+		
+			//this.parent.updateMatrixWorld();
 			worldPosition.setFromMatrixPosition(this.matrixWorld);
 
 			for ( var i = 0, il = birds.length; i < il; i++ ) {

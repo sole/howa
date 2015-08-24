@@ -20,6 +20,7 @@
   "license": "Apache 2",
   "dependencies": {
     "brfs": "^1.4.1",
+    "es6-promise": "^3.0.2",
     "gulp": "^3.9.0",
     "gulp-batch": "^1.0.5",
     "gulp-jade": "^1.1.0",
