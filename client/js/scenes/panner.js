@@ -16,7 +16,12 @@ module.exports = function(THREE, audioContext) {
 	var birdSample7 = fs.readFileSync(__dirname + '/birds/bird07.ogg');
 	var birdSample8 = fs.readFileSync(__dirname + '/birds/bird08.ogg');
 	
-	var samples = [ birdSample1, birdSample2, birdSample3, birdSample4, birdSample5, birdSample6, birdSample7, birdSample8 ];
+	var samples = [
+		/*birdSample1,
+		birdSample2,
+		birdSample3,
+		birdSample4,*/
+		birdSample5, birdSample6, birdSample7, birdSample8 ];
 	var decodedBirdSamples = [];
 
 	function getRandom(maxValue) {
@@ -61,9 +66,9 @@ module.exports = function(THREE, audioContext) {
 
 		function initBirds(soundBuffers) {
 			
-			var birdMaterial = new THREE.MeshBasicMaterial({ color: 0xff00ff, side: THREE.DoubleSide });
+			var birdMaterial = new THREE.MeshBasicMaterial({ color: 0xff00ff, /*side: THREE.DoubleSide,*/ wireframe: true });
 			var maxSpeed = 0.25;
-			var m = 200;
+			var m = 100;
 			var wide = m * 2;
 			var now = audioContext.currentTime;
 			var numSounds = soundBuffers.length;
@@ -112,11 +117,6 @@ module.exports = function(THREE, audioContext) {
 		this.render = function(time) {
 			var now = audioContext.currentTime;
 
-			//if(birds.length !== boids.length ) {
-			//	return;
-			//}
-		
-			//this.parent.updateMatrixWorld();
 			worldPosition.setFromMatrixPosition(this.matrixWorld);
 
 			for ( var i = 0, il = birds.length; i < il; i++ ) {
@@ -129,6 +129,7 @@ module.exports = function(THREE, audioContext) {
 				bird.position.copy(position);
 
 				boid.panner.setPosition(worldPosition.x + position.x, worldPosition.y + position.y, worldPosition.z + position.z);
+				boid.panner.setVelocity(boid.velocity.x, boid.velocity.y, boid.velocity.z);
 
 				bird.rotation.y = Math.atan2( - boid.velocity.z, boid.velocity.x );
 				bird.rotation.z = Math.asin( boid.velocity.y / boid.velocity.length() );
@@ -159,8 +160,6 @@ module.exports = function(THREE, audioContext) {
 			gain.gain.cancelScheduledValues(now);
 			gain.gain.linearRampToValueAtTime(0, now + t);
 			setTimeout(function() {
-				//oscillator.disconnect();
-				//stereoPanner.disconnect();
 				birdSink.disconnect();
 			}, (t+0.5) * 1000);
 		};
