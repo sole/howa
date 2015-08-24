@@ -11,8 +11,12 @@ module.exports = function(THREE, audioContext) {
 	var birdSample2 = fs.readFileSync(__dirname + '/birds/bird02.ogg');
 	var birdSample3 = fs.readFileSync(__dirname + '/birds/bird03.ogg');
 	var birdSample4 = fs.readFileSync(__dirname + '/birds/bird04.ogg');
+	var birdSample5 = fs.readFileSync(__dirname + '/birds/bird05.ogg');
+	var birdSample6 = fs.readFileSync(__dirname + '/birds/bird06.ogg');
+	var birdSample7 = fs.readFileSync(__dirname + '/birds/bird07.ogg');
+	var birdSample8 = fs.readFileSync(__dirname + '/birds/bird08.ogg');
 	
-	var samples = [ birdSample1, birdSample2, birdSample3, birdSample4 ];
+	var samples = [ birdSample1, birdSample2, birdSample3, birdSample4, birdSample5, birdSample6, birdSample7, birdSample8 ];
 	var decodedBirdSamples = [];
 
 	function getRandom(maxValue) {
@@ -53,6 +57,7 @@ module.exports = function(THREE, audioContext) {
 		// ---
 
 		var scene = this;
+		var chirpInterval = 5;
 
 		function initBirds(soundBuffers) {
 			
@@ -85,7 +90,6 @@ module.exports = function(THREE, audioContext) {
 
 				var samplePlayer = SamplePlayer(audioContext);
 				samplePlayer.connect(panner);
-				//samplePlayer.connect(birdSink);
 				
 				boid.samplePlayer = samplePlayer;
 				samplePlayer.buffer = soundBuffers[soundIndex];
@@ -94,7 +98,7 @@ module.exports = function(THREE, audioContext) {
 				soundIndex++;
 				soundIndex = soundIndex % numSounds;
 
-				boid.lastTimePlayed = now + i + 3 * Math.random();
+				boid.lastTimePlayed = now - i * 2;
 
 				var bird = new THREE.Mesh(new BirdGeometry(), birdMaterial);
 				birds.push(bird);
@@ -133,10 +137,10 @@ module.exports = function(THREE, audioContext) {
 				bird.geometry.vertices[ 5 ].y = bird.geometry.vertices[ 4 ].y = Math.sin( bird.phase ) * 5;
 				bird.geometry.verticesNeedUpdate = true;
 
-				if(now - boid.lastTimePlayed > 2) {
+				if(Math.random() > 0.7 && (now - boid.lastTimePlayed > chirpInterval + boid.samplePlayer.buffer.duration )) {
 					console.log('play!', i);
 					boid.samplePlayer.start(now);
-					boid.lastTimePlayed = now + Math.random() * 5;
+					boid.lastTimePlayed = now + Math.random() * chirpInterval;
 				}
 			}
 		};
