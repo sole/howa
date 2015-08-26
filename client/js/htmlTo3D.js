@@ -59,13 +59,13 @@ function elementToTextObject(el, THREE, nodeProperties) {
 	var geom = new THREE.TextGeometry(str, {
 		size: nodeProperties.size,
 		height: 1,
-		curveSegments: 5
+		curveSegments: 3
 	});
 
 	geom.computeBoundingBox();
 	geom.computeVertexNormals();
 	
-	var mat = new THREE.MeshBasicMaterial({ wireframe: true, color: colours[randColour] });
+	var mat = new THREE.MeshBasicMaterial({ wireframe: true, color: colours[randColour], wireframeLinewidth: 2 });
 	var obj = new THREE.Mesh(geom, mat);
 	return obj;
 }
