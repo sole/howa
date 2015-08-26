@@ -8,6 +8,7 @@ module.exports = function(THREE, audioContext) {
 		var numPoints = options.numPoints;
 		var width = options.width;
 		var dashed = options.dashed;
+		var color = options.color !== undefined ? options.color : 0x00ffff;
 		var x = -0.5 * width;
 		var segmentWidth = width / numPoints;
 		var points = [];
@@ -25,9 +26,9 @@ module.exports = function(THREE, audioContext) {
 		var material;
 		
 		if(dashed) {
-			material = new THREE.LineDashedMaterial({ color: 0x00FFFF, dashSize: 1, gapSize: 1 });
+			material = new THREE.LineDashedMaterial({ color: color, dashSize: 1, gapSize: 1 });
 		} else {
-			material = new THREE.LineBasicMaterial();
+			material = new THREE.LineBasicMaterial({ color: color });
 		}
 
 		var line = new THREE.Line(geometry, material);
@@ -35,17 +36,28 @@ module.exports = function(THREE, audioContext) {
 		return line;
 	}
 
-	function updateLine(line, frequency, amplitude, time) {
+	function updateLine(line, frequencies, amplitudes, time) {
 		var vertices = line.geometry.vertices;
 		var num = vertices.length;
-		var inc = (frequency * 2 * Math.PI / num);
 		var t = time * 0.01;
-		var phi = t;
+		var incs = [];
+		var phis = [];
+
+		frequencies.forEach(function(f) {
+			incs.push(f * 2 * Math.PI / num);
+			phis.push(t);
+		});
 
 		for(var i = 0; i < num; i++) {
-			var y = amplitude * Math.sin(phi);
+			var y = 0;
+
+			phis.forEach(function(p, index) {
+				y += amplitudes[index] * Math.sin(p);
+				phis[index] += incs[index];
+			});
+
 			vertices[i].y = y;
-			phi += inc;
+
 		}
 
 		line.geometry.computeLineDistances();
@@ -62,14 +74,25 @@ module.exports = function(THREE, audioContext) {
 		var lfoGain;
 		var gain = audioContext.createGain();
 		
-		var numPoints = 400;
+		var numPoints = 200;
+		var lineWidth = 400;
 		var frequencyLine = makeLine({
 			numPoints: numPoints,
-			width: 200,
+			width: lineWidth,
 			dashed: true
 		});
+		
+		var combinedLine = makeLine({
+			numPoints: numPoints,
+			width: lineWidth,
+			dashed: false,
+			color: 0x00FF00
+		});
 
-		// this.add(frequencyLine);
+		combinedLine.material.linewidth = 3;
+		combinedLine.material.opacity = 0.75;
+		combinedLine.material.transparent = true;
+
 
 		var mat = new THREE.MeshBasicMaterial({ wireframe: true, color: 0x00FF00 });
 		var n = 5;
@@ -80,6 +103,7 @@ module.exports = function(THREE, audioContext) {
 		var mouseX, mouseY;
 		var paramX = 0.5;
 		var paramY = 0.5;
+		var baseOscillatorFrequency = 220;
 		var maxLfoFrequency = 100;
 		var maxLfoDepth = 100;
 		var lfoFrequency = maxLfoFrequency * 0.5;
@@ -106,13 +130,17 @@ module.exports = function(THREE, audioContext) {
 			mesh.position.y = -100 * (paramY - 0.5);
 			mesh.position.x = -100 * (0.5 - paramX);
 
-			updateLine(frequencyLine, lfoFrequency, 25 * lfoDepth / maxLfoDepth, time);
+			var lfoAmp = 25 * lfoDepth / maxLfoDepth;
+			var oscAmp = 100;
+
+			updateLine(frequencyLine, [ lfoFrequency ], [ lfoAmp ], time);
+			updateLine(combinedLine, [ lfoFrequency, baseOscillatorFrequency ], [ lfoAmp, oscAmp ], time);
 		};
 	
 		this.activate = function() {
 			var now = audioContext.currentTime;
 			oscillator = audioContext.createOscillator();
-			oscillator.frequency.setValueAtTime(220, now);
+			oscillator.frequency.setValueAtTime(baseOscillatorFrequency, now);
 			oscillator.connect(gain);
 			oscillator.start(now);
 			gain.gain.cancelScheduledValues(now);
@@ -130,6 +158,7 @@ module.exports = function(THREE, audioContext) {
 			lfoOscillator.start(now);
 
 			this.add(frequencyLine);
+			this.add(combinedLine);
 			
 			window.addEventListener('mousemove', onMouseMove);
 		};
@@ -151,6 +180,7 @@ module.exports = function(THREE, audioContext) {
 			}, (t+0.5) * 1000);
 
 			this.remove(frequencyLine);
+			this.remove(combinedLine);
 		};
 
 	}
