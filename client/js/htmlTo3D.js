@@ -158,7 +158,6 @@ module.exports = function(html, options) {
 
 		// Center objects that need to be centered horizontally
 		childObjects.forEach(function(obj) {
-			console.log(obj);
 			if(obj.needsToBeCentered) {
 				obj.position.x = contentCenter.x;
 			}
