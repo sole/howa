@@ -131,7 +131,7 @@ module.exports = function(THREE, audioContext) {
 			mesh.position.x = -100 * (0.5 - paramX);
 
 			var lfoAmp = 25 * lfoDepth / maxLfoDepth;
-			var oscAmp = 100;
+			var oscAmp = 50;
 
 			updateLine(frequencyLine, [ lfoFrequency ], [ lfoAmp ], time);
 			updateLine(combinedLine, [ lfoFrequency, baseOscillatorFrequency ], [ lfoAmp, oscAmp ], time);
