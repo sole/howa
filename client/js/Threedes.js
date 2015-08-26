@@ -60,14 +60,14 @@ function Threedees() {
 
 		renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
 		renderer.setPixelRatio(window.devicePixelRatio);
-		renderer.shadowMapEnabled = true;
-		renderer.shadowMapSoft = true;
+		//renderer.shadowMapEnabled = true;
+		//renderer.shadowMapSoft = true;
 
 		// Only expose the element, not the renderer
 		this.domElement = renderer.domElement;
 
 		scene = new THREE.Scene();
-		scene.add(new THREE.AmbientLight(0x444444));
+		// scene.add(new THREE.AmbientLight(0x444444));
 
 		camera = new THREE.PerspectiveCamera(60, 320 / 200, 1, 100000);
 		cameraTarget = new THREE.Vector3(0, 0, 0);
@@ -127,7 +127,7 @@ function Threedees() {
 		// Also connect the audio output of the slides to the destination!
 		limiter.connect(audioContext.destination);
 
-		var light = new THREE.DirectionalLight(0xdfebff, 1);
+		/*var light = new THREE.DirectionalLight(0xdfebff, 1);
 		light.target.position.set(0, 0, 0);
 		light.position.set(0, 200, 0);
 		light.position.multiplyScalar(1.3);
@@ -143,7 +143,7 @@ function Threedees() {
 
 		light.shadowCameraFar = 1000;
 		light.shadowDarkness = 0.5;
-		scene.add(light);
+		scene.add(light);*/
 
 	};
 
