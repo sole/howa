@@ -25,6 +25,7 @@ function tweenObject(object, destination, duration) {
 
 function getDistanceToFit(camera, object, canvasWidth, canvasHeight) {
 	// Sort of comes from here http://stackoverflow.com/a/25597836/205721 but slightly modified to fit both width and height
+	console.log('fitting to ' , object);
 	var vFOV = camera.fov * Math.PI / 180.0; 
 	var ratio = 2 * Math.tan(vFOV / 2);
 	var screen = ratio * (canvasWidth / canvasHeight); 
@@ -192,7 +193,7 @@ function Threedees() {
 			z: slideCenter.z
 		}, transitionDuration).start();
 
-		var distance = getDistanceToFit(camera, slide, rendererWidth, rendererHeight);
+		var distance = getDistanceToFit(camera, slide.contentsObject, rendererWidth, rendererHeight);
 		
 		var dstCamera = slideCenter.add(new THREE.Vector3(0, 0, distance));
 

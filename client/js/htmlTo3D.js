@@ -40,7 +40,7 @@ function elementToRenderableObject(el, three, audioContext, nodeProperties) {
 	var key = el.dataset.replace;
 	var ctor = replacementScenes[key](three, audioContext);
 	var instance = new ctor();
-	instance.needsToBeCentered = true;
+	instance.isRenderable = true;
 	return instance;
 }
 
@@ -90,6 +90,11 @@ module.exports = function(html, options) {
 		var contentsObject = new THREE.Object3D();
 
 		var childElements = makeArray(sectionElement.childNodes);
+
+		// TODO this is related to the 'empty boxes have infinity size' bug
+		var dummy = new THREE.Mesh(new THREE.BoxGeometry(0, 0, 0), new THREE.MeshBasicMaterial());
+		contentsObject.add(dummy);
+		// ---------
 		
 		// Slides might have some options, let's parse them here
 		var data = sectionElement.dataset;
@@ -114,7 +119,13 @@ module.exports = function(html, options) {
 			}
 			
 			var obj = elementToObject(el, THREE, audioContext);
-			contentsObject.add(obj);
+			if(obj.isRenderable) {
+				slideObject.add(obj);
+			} else {
+				childObjects.push(obj);
+				contentsObject.add(obj);
+			}
+
 			if(obj.audioNode) {
 				obj.audioNode.connect(slideObject.audioNode);
 			}
@@ -123,10 +134,13 @@ module.exports = function(html, options) {
 			//obj.add(axisHelper);
 
 			
-			childObjects.push(obj);
 		});
 
 		slideObject.add(contentsObject);
+
+		// Keep track of which object is it-we'll use it to zoom to that object
+		// and ignore other objects that might act as decorations etc
+		slideObject.contentsObject = contentsObject;
 
 		// Distributing the objects vertically, top to bottom
 		distributeObjects(childObjects, { offset: 0, dimension: 'y', direction: -1 });
@@ -157,11 +171,11 @@ module.exports = function(html, options) {
 		var contentCenter = contentBox.center();
 
 		// Center objects that need to be centered horizontally
-		childObjects.forEach(function(obj) {
-			if(obj.needsToBeCentered) {
+		/*childObjects.forEach(function(obj) {
+			if(obj.isRenderable) {
 				obj.position.x = contentCenter.x;
 			}
-		});
+		});*/
 		
 		contentsObject.position.sub(contentCenter);
 	
