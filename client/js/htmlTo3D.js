@@ -39,7 +39,9 @@ function elementToObject(el, three, audioContext) {
 function elementToRenderableObject(el, three, audioContext, nodeProperties) {
 	var key = el.dataset.replace;
 	var ctor = replacementScenes[key](three, audioContext);
-	return new ctor();
+	var instance = new ctor();
+	instance.needsToBeCentered = true;
+	return instance;
 }
 
 function elementToTextObject(el, THREE, nodeProperties) {
@@ -116,6 +118,10 @@ module.exports = function(html, options) {
 			if(obj.audioNode) {
 				obj.audioNode.connect(slideObject.audioNode);
 			}
+
+			//var axisHelper = new THREE.AxisHelper(50);
+			//obj.add(axisHelper);
+
 			
 			childObjects.push(obj);
 		});
@@ -149,6 +155,14 @@ module.exports = function(html, options) {
 
 		var contentSize = contentBox.size();
 		var contentCenter = contentBox.center();
+
+		// Center objects that need to be centered horizontally
+		childObjects.forEach(function(obj) {
+			console.log(obj);
+			if(obj.needsToBeCentered) {
+				obj.position.x = contentCenter.x;
+			}
+		});
 		
 		contentsObject.position.sub(contentCenter);
 	
