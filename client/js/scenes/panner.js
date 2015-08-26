@@ -68,7 +68,7 @@ module.exports = function(THREE, audioContext) {
 			
 			var birdMaterial = new THREE.MeshBasicMaterial({ color: 0xff00ff, /*side: THREE.DoubleSide,*/ wireframe: true });
 			var maxSpeed = 0.25;
-			var m = 100;
+			var m = 150;
 			var wide = m * 2;
 			var now = audioContext.currentTime;
 			var numSounds = soundBuffers.length;
@@ -129,7 +129,6 @@ module.exports = function(THREE, audioContext) {
 				bird.position.copy(position);
 
 				boid.panner.setPosition(worldPosition.x + position.x, worldPosition.y + position.y, worldPosition.z + position.z);
-				boid.panner.setVelocity(boid.velocity.x, boid.velocity.y, boid.velocity.z);
 
 				bird.rotation.y = Math.atan2( - boid.velocity.z, boid.velocity.x );
 				bird.rotation.z = Math.asin( boid.velocity.y / boid.velocity.length() );
@@ -139,7 +138,6 @@ module.exports = function(THREE, audioContext) {
 				bird.geometry.verticesNeedUpdate = true;
 
 				if(Math.random() > 0.7 && (now - boid.lastTimePlayed > chirpInterval + boid.samplePlayer.buffer.duration )) {
-					console.log('play!', i);
 					boid.samplePlayer.start(now);
 					boid.lastTimePlayed = now + Math.random() * chirpInterval;
 				}

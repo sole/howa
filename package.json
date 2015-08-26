@@ -29,6 +29,7 @@
     "n3d-threejs": "^70.0.0",
     "openmusic-sample-player": "^1.5.0",
     "tween.js": "^15.0.0",
+    "unlerp": "^1.0.1",
     "you-know-what": "^1.0.0"
   }
 }
