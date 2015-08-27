@@ -9,6 +9,7 @@ var replacementScenes = {
 	'audio-context': require('./scenes/audio-context'),
 	'audio-graph': require('./scenes/audio-graph'),
 	'buffer-source': require('./scenes/buffer-source'),
+	'buffer-source-bending': require('./scenes/buffer-source-bending'),
 	'modulation': require('./scenes/modulation'),
 	'stereo-panner': require('./scenes/stereo-panner'),
 	'panner': require('./scenes/panner')
