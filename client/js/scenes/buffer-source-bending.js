@@ -21,12 +21,12 @@ module.exports = function(THREE, audioContext) {
 
 		var mat = new THREE.MeshBasicMaterial({ wireframe: true, color: 0xFFFF00 });
 		var n = 100;
-		var geom = new THREE.CylinderGeometry(n, n, 1, 16);
+		var geom = new THREE.CylinderGeometry(n, n, 0.5, 16, 1);
 		var mesh = new THREE.Mesh(geom, mat);
 		this.add(mesh);
 
-		// mesh.position.y = -n * 2.1;
-		mesh.rotation.x = Math.PI / 2;
+		mesh.position.y = -20;
+		//mesh.rotation.x = Math.PI / 2;
 
 		var lastTime = 0;
 		this.render = function(time) {
