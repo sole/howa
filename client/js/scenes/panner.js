@@ -43,7 +43,20 @@ module.exports = function(THREE, audioContext) {
 		var birds = [];
 		var boids = [];
 		var worldPosition = new THREE.Vector3();
-	
+
+		var m = 150;
+		var wide = m * 2;
+		var n = m * 1.5;
+		var wide_n = n * 2;
+
+		var cage = new THREE.Object3D();
+		
+		var gridXZ = new THREE.GridHelper(200, 20);
+		gridXZ.position.set( 0, -20, 0 );
+		cage.add(gridXZ);
+
+		this.add(cage);
+			
 		var gain = audioContext.createGain();
 		gain.connect(this.audioNode);
 		var birdSink = audioContext.createGain();
@@ -68,8 +81,6 @@ module.exports = function(THREE, audioContext) {
 			
 			var birdMaterial = new THREE.MeshBasicMaterial({ color: 0xff00ff, /*side: THREE.DoubleSide,*/ wireframe: true });
 			var maxSpeed = 0.25;
-			var m = 150;
-			var wide = m * 2;
 			var now = audioContext.currentTime;
 			var numSounds = soundBuffers.length;
 			var soundIndex = 0;
@@ -145,6 +156,11 @@ module.exports = function(THREE, audioContext) {
 		};
 	
 		this.activate = function() {
+			
+			// This is such a terrible hack 8-)
+			//this.parent.contentsObject.add(cage);
+
+			
 			var now = audioContext.currentTime;
 			birdSink.connect(gain);
 			gain.gain.cancelScheduledValues(now);
@@ -157,7 +173,9 @@ module.exports = function(THREE, audioContext) {
 			var t = 2;
 			gain.gain.cancelScheduledValues(now);
 			gain.gain.linearRampToValueAtTime(0, now + t);
+			//var self = this;
 			setTimeout(function() {
+			//	self.parent.contentsObject.remove(cage);
 				birdSink.disconnect();
 			}, (t+0.5) * 1000);
 		};
