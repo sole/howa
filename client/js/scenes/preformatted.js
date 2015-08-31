@@ -45,11 +45,15 @@ module.exports = function(THREE, audioContext) {
 
 			var lineObjects = [];
 
+			console.log(window._typeface_js.faces);
+			
 			lines.forEach(function(line) {
 				var geom = new THREE.TextGeometry(line, {
-					size: 8,
+					font: 'fira mono',
+					weight: 'bold',
+					size: 7,
 					height: 1,
-					curveSegments: 3
+					curveSegments: 2
 				});
 
 				geom.computeBoundingBox();

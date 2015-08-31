@@ -4,6 +4,7 @@ var distributeObjects = require('./distribute-objects')(THREE);
 var Renderable = require('./Renderable')(THREE);
 
 require('./vendor/helvetiker_regular.typeface.js');
+require('./vendor/Fira Mono_Bold.typeface.js');
 
 var replacementScenes = {
 	'audio-context': require('./scenes/audio-context'),
