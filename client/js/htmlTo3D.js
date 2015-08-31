@@ -2,6 +2,7 @@ var THREE = require('n3d-threejs');
 var makeArray = require('make-array');
 var distributeObjects = require('./distribute-objects')(THREE);
 var Renderable = require('./Renderable')(THREE);
+var colours = require('./colours');
 
 require('./vendor/helvetiker_regular.typeface.js');
 require('./vendor/Fira Mono_Bold.typeface.js');
@@ -18,11 +19,11 @@ var replacementScenes = {
 };
 
 var knownNodes = {
-	'H1': { size: 20 },
-	'H2': { size: 10 },
+	'H1': { size: 20, colour: colours.primary1 },
+	'H2': { size: 10, colour: colours.primary2 },
 	'IMG': { replace: 'renderable' },
-	'P': { size: 8 },
-	'PRE': { replace: 'preformatted' }
+	'P': { size: 8, colour: colours.secondary1 },
+	'PRE': { replace: 'preformatted', colour: colours.secondary2, size: 7 }
 };
 
 var knownNodesKeys = Object.keys(knownNodes);
@@ -66,9 +67,6 @@ function elementToRenderableObject(el, three, audioContext, nodeProperties) {
 }
 
 function elementToTextObject(el, THREE, nodeProperties) {
-	var n = Math.round(1 + 3 * Math.random());
-	var colours = [ 0xFF0000, 0x00FF00, 0x00ffFF ];
-	var randColour = (colours.length * Math.random()) | 0;
 
 	// This makes no freaking sense.
 	// "height" is actually the depth (in Z),
@@ -76,6 +74,7 @@ function elementToTextObject(el, THREE, nodeProperties) {
 	//  (╯°□°）╯︵ ┻━┻
 	
 	var str = el.textContent;
+	var colour = nodeProperties.colour !== undefined ? nodeProperties.colour : 0xFF00FF;
 	
 	var geom = new THREE.TextGeometry(str, {
 		size: nodeProperties.size,
@@ -86,7 +85,7 @@ function elementToTextObject(el, THREE, nodeProperties) {
 	geom.computeBoundingBox();
 	geom.computeVertexNormals();
 	
-	var mat = new THREE.MeshBasicMaterial({ wireframe: true, color: colours[randColour], wireframeLinewidth: 2 });
+	var mat = new THREE.MeshBasicMaterial({ wireframe: true, color: colour, wireframeLinewidth: 2 });
 	var obj = new THREE.Mesh(geom, mat);
 	return obj;
 }

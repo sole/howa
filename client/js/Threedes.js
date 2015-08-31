@@ -4,7 +4,7 @@ var THREE = require('n3d-threejs');
 var TWEEN = require('tween.js');
 var htmlTo3D = require('./htmlTo3D');
 var distributeObjects = require('./distribute-objects')(THREE);
-
+var colours = require('./colours');
 
 window.THREE = THREE; // urgh, but required for the include below
 var TrackballControls = require('./vendor/TrackballControls');
@@ -59,6 +59,7 @@ function Threedees() {
 
 		renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
 		renderer.setPixelRatio(window.devicePixelRatio);
+		renderer.setClearColor(colours.background, 1.0);
 		//renderer.shadowMapEnabled = true;
 		//renderer.shadowMapSoft = true;
 
