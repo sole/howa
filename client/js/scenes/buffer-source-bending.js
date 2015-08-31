@@ -5,6 +5,7 @@ module.exports = function(THREE, audioContext) {
 	var AmenLoop = require('./AmenLoop');
 	var TransitionGain = require('./TransitionGain');
 	var MouseInput = require('./MouseInput');
+	var colours = require('../colours');
 	
 	function BufferSourceBending() {
 		
@@ -19,14 +20,13 @@ module.exports = function(THREE, audioContext) {
 
 		var mouseInput = new MouseInput();
 
-		var mat = new THREE.MeshBasicMaterial({ wireframe: true, color: 0xFFFF00 });
+		var mat = new THREE.MeshBasicMaterial({ wireframe: true, color: colours.secondary1 });
 		var n = 100;
 		var geom = new THREE.CylinderGeometry(n, n, 0.5, 16, 1);
 		var mesh = new THREE.Mesh(geom, mat);
 		this.add(mesh);
 
 		mesh.position.y = -20;
-		//mesh.rotation.x = Math.PI / 2;
 
 		var lastTime = 0;
 		this.render = function(time) {
