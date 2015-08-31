@@ -12,31 +12,49 @@ var replacementScenes = {
 	'buffer-source-bending': require('./scenes/buffer-source-bending'),
 	'modulation': require('./scenes/modulation'),
 	'stereo-panner': require('./scenes/stereo-panner'),
-	'panner': require('./scenes/panner')
+	'panner': require('./scenes/panner'),
+	'preformatted': require('./scenes/preformatted')
 };
 
 var knownNodes = {
 	'H1': { size: 20 },
 	'H2': { size: 10 },
+	'IMG': { replace: 'renderable' },
 	'P': { size: 8 },
-	'IMG': { replace: true }
+	'PRE': { replace: 'preformatted' }
 };
 
 var knownNodesKeys = Object.keys(knownNodes);
+
 
 function isKnownNode(name) {
 	return knownNodesKeys.indexOf(name) !== -1;
 }
 
+
 function elementToObject(el, three, audioContext) {
 	var nodeProperties = knownNodes[el.nodeName];
 	
 	if(nodeProperties.replace) {
-		return elementToRenderableObject(el, three, audioContext, nodeProperties);
+		return elementToReplacedObject(el, three, audioContext, nodeProperties);
 	} else {
 		return elementToTextObject(el, three, nodeProperties);
 	}
 }
+
+
+function elementToReplacedObject(el, three, audioContext, nodeProperties) {
+	if(nodeProperties.replace === 'renderable') {
+		return elementToRenderableObject(el, three, audioContext, nodeProperties);
+	} else if(nodeProperties.replace === 'preformatted') {
+		var ctor = replacementScenes['preformatted'](three, audioContext);
+		var instance = new ctor();
+		instance.setFromElement(el);
+		instance.isRenderable = false; //true;
+		return instance;
+	}
+}
+
 
 function elementToRenderableObject(el, three, audioContext, nodeProperties) {
 	var key = el.dataset.replace;
