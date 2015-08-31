@@ -2,6 +2,7 @@ module.exports = function(THREE, audioContext) {
 
 	var colours = require('../colours');
 	var Renderable = require('../Renderable')(THREE);
+	var TransitionGain = require('./TransitionGain')
 	var unlerp = require('unlerp');
 	
 
@@ -73,7 +74,8 @@ module.exports = function(THREE, audioContext) {
 		var oscillator;
 		var lfoOscillator;
 		var lfoGain;
-		var gain = audioContext.createGain();
+		var gain = TransitionGain(audioContext);
+		gain.connect(this.audioNode);
 		
 		var numPoints = 200;
 		var lineWidth = 400;
@@ -142,11 +144,7 @@ module.exports = function(THREE, audioContext) {
 			oscillator.frequency.setValueAtTime(baseOscillatorFrequency, now);
 			oscillator.connect(gain);
 			oscillator.start(now);
-			gain.gain.cancelScheduledValues(now);
-			gain.gain.setValueAtTime(0, now);
-			gain.gain.linearRampToValueAtTime(maxGain, now + 1);
-			gain.connect(this.audioNode);
-
+			
 			lfoGain = audioContext.createGain();
 			lfoGain.gain.setValueAtTime(0, now);
 			lfoGain.connect(oscillator.frequency);
@@ -155,6 +153,8 @@ module.exports = function(THREE, audioContext) {
 			lfoOscillator.connect(lfoGain);
 			lfoOscillator.frequency.setValueAtTime(10, now);
 			lfoOscillator.start(now);
+
+			gain.start();
 
 			this.add(frequencyLine);
 			this.add(combinedLine);
@@ -168,15 +168,13 @@ module.exports = function(THREE, audioContext) {
 			
 			var now = audioContext.currentTime;
 			var t = 2;
-			gain.gain.cancelScheduledValues(now);
-			gain.gain.linearRampToValueAtTime(0, now + t);
-			setTimeout(function() {
+			
+			gain.stop(function() {
 				oscillator.stop();
 				lfoOscillator.stop();
 				lfoOscillator.disconnect();
 				oscillator.disconnect();
-				gain.disconnect();
-			}, (t+0.5) * 1000);
+			});
 
 			this.remove(frequencyLine);
 			this.remove(combinedLine);
