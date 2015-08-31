@@ -1,4 +1,5 @@
 var TWEEN = require('tween.js');
+var colours = require('../colours');
 
 module.exports = function(THREE, audioContext) {
 
@@ -17,7 +18,7 @@ module.exports = function(THREE, audioContext) {
 		var transitionLength = 2500;
 
 		var hemisphereGeom = new THREE.SphereGeometry(1000, 64, 64);
-		var hemisphereMat = new THREE.MeshBasicMaterial({ wireframe: true, color: 0x008000 });
+		var hemisphereMat = new THREE.MeshBasicMaterial({ wireframe: true, color: colours.primary2 });
 		hemisphereMat.opacity = 0.0;
 		hemisphereMat.transparent = true;
 		var hemisphere = new THREE.Mesh(hemisphereGeom, hemisphereMat);
@@ -43,7 +44,7 @@ module.exports = function(THREE, audioContext) {
 			}
 
 			transitionTween = new TWEEN.Tween({ opacity: 0 })
-				.to({ opacity: 1 }, transitionLength)
+				.to({ opacity: 0.5 }, transitionLength)
 				.onUpdate(onTransition)
 				.start();
 

@@ -1,5 +1,6 @@
 module.exports = function(THREE, audioContext) {
-	
+
+	var colours = require('../colours');
 	var Renderable = require('../Renderable')(THREE);
 	var unlerp = require('unlerp');
 	
@@ -79,27 +80,28 @@ module.exports = function(THREE, audioContext) {
 		var frequencyLine = makeLine({
 			numPoints: numPoints,
 			width: lineWidth,
-			dashed: true
+			dashed: true,
+			color: colours.secondary1
 		});
 		
 		var combinedLine = makeLine({
 			numPoints: numPoints,
 			width: lineWidth,
 			dashed: false,
-			color: 0x00FF00
+			color: colours.primary2
 		});
 
-		combinedLine.material.linewidth = 3;
-		combinedLine.material.opacity = 0.75;
+		var materialLineWidth = 3;
+		var materialOpacity = 0.75;
+
+		combinedLine.material.linewidth = materialLineWidth;
+		combinedLine.material.opacity = materialOpacity;
 		combinedLine.material.transparent = true;
 
-
-		var mat = new THREE.MeshBasicMaterial({ wireframe: true, color: 0x00FF00 });
-		var n = 5;
-		var geom = new THREE.SphereGeometry(n);
-		var mesh = new THREE.Mesh(geom, mat);
-		this.add(mesh);
-
+		frequencyLine.material.linewidth = materialLineWidth;
+		frequencyLine.material.opacity = materialOpacity;
+		frequencyLine.material.transparent = true;
+		
 		var mouseX, mouseY;
 		var paramX = 0.5;
 		var paramY = 0.5;
@@ -126,9 +128,6 @@ module.exports = function(THREE, audioContext) {
 
 		this.render = function(time) {
 			var now = audioContext.currentTime;
-
-			mesh.position.y = -100 * (paramY - 0.5);
-			mesh.position.x = -100 * (0.5 - paramX);
 
 			var lfoAmp = 25 * lfoDepth / maxLfoDepth;
 			var oscAmp = 50;
