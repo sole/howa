@@ -7,7 +7,7 @@ module.exports = function(THREE, audioContext) {
 	
 	function SceneAudioContext() {
 		
-		var WebAudioThx = require('./web-audio-thx');
+		var WebAudioThx = require('./publish_me/web-audio-thx');
 
 		Renderable.call(this, audioContext);
 

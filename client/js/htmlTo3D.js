@@ -9,7 +9,7 @@ require('./vendor/helvetiker_regular.typeface.js');
 require('./vendor/437_Win_Regular.typeface.js');
 
 var replacementScenes = {
-	'audio-context': require('./scenes/audio-context'),
+	'intro': require('./scenes/intro'),
 	'audio-graph': require('./scenes/audio-graph'),
 	'buffer-source': require('./scenes/buffer-source'),
 	'buffer-source-bending': require('./scenes/buffer-source-bending'),
