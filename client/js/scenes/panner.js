@@ -6,6 +6,7 @@ module.exports = function(THREE, audioContext) {
 	var SamplePlayer = require('openmusic-sample-player');
 	var fs = require('fs');
 	var Promise = require('es6-promise').Promise;
+	var colours = require('../colours');
 	
 	var birdSample1 = fs.readFileSync(__dirname + '/birds/bird01.ogg');
 	var birdSample2 = fs.readFileSync(__dirname + '/birds/bird02.ogg');
@@ -79,7 +80,7 @@ module.exports = function(THREE, audioContext) {
 
 		function initBirds(soundBuffers) {
 			
-			var birdMaterial = new THREE.MeshBasicMaterial({ color: 0xff00ff, /*side: THREE.DoubleSide,*/ wireframe: true });
+			var birdMaterial = new THREE.MeshBasicMaterial({ color: colours.secondary1, /*side: THREE.DoubleSide,*/ wireframe: true });
 			var maxSpeed = 0.25;
 			var now = audioContext.currentTime;
 			var numSounds = soundBuffers.length;
