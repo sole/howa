@@ -49,8 +49,8 @@ module.exports = function(THREE, audioContext) {
 			
 			lines.forEach(function(line) {
 				var geom = new THREE.TextGeometry(line, {
-					font: 'fira mono',
-					weight: 'bold',
+					font: 'Perfect DOS VGA 437 Win'.toLowerCase(),
+					weight: 'normal',
 					size: 7,
 					height: 1,
 					curveSegments: 2

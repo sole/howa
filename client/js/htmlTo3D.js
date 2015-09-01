@@ -5,7 +5,8 @@ var Renderable = require('./Renderable')(THREE);
 var colours = require('./colours');
 
 require('./vendor/helvetiker_regular.typeface.js');
-require('./vendor/Fira Mono_Bold.typeface.js');
+//require('./vendor/Fira Mono_Bold.typeface.js');
+require('./vendor/437_Win_Regular.typeface.js');
 
 var replacementScenes = {
 	'audio-context': require('./scenes/audio-context'),
