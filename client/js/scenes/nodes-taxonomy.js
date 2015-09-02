@@ -26,6 +26,18 @@ module.exports = function(THREE, audioContext) {
 		
 		var mat = new THREE.MeshBasicMaterial({ wireframe: true, color: colour, wireframeLinewidth: 1 });
 		var obj = new THREE.Mesh(geom, mat);
+
+		var size = geom.boundingBox.size();
+		var padSize = size.clone().multiplyScalar(1.1);
+
+		var padGeom = new THREE.BoxGeometry(padSize.x, padSize.y, padSize.z);
+		var padMaterial = new THREE.MeshBasicMaterial({ wireframe: true, color: 0x00FF00, wireframeLinewidth: 0.1 });
+		var pad = new THREE.Mesh(padGeom, padMaterial);
+		obj.add(pad);
+		pad.position.x += size.x * 0.5;
+		pad.position.y += size.y * 0.5;
+		padMaterial.transparent = true;
+		padMaterial.opacity = 0;
 		
 		return obj;
 
