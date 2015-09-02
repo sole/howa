@@ -44,7 +44,7 @@ module.exports = function(THREE, audioContext) {
 					font: 'Perfect DOS VGA 437 Win'.toLowerCase(),
 					weight: 'normal',
 					size: 7,
-					height: 1,
+					height: 0,
 					curveSegments: 2
 				});
 

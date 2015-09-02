@@ -17,7 +17,7 @@ module.exports = function(THREE, audioContext) {
 
 		var geom = new THREE.TextGeometry(str, {
 			size: 6,
-			height: 1,
+			height: 0,
 			curveSegments: 3
 		});
 
@@ -28,7 +28,9 @@ module.exports = function(THREE, audioContext) {
 		var obj = new THREE.Mesh(geom, mat);
 
 		var size = geom.boundingBox.size();
-		var padSize = size.clone().multiplyScalar(1.1);
+		var padSize = size.clone();
+		padSize.x += 4;
+		padSize.y += 1;
 
 		var padGeom = new THREE.BoxGeometry(padSize.x, padSize.y, padSize.z);
 		var padMaterial = new THREE.MeshBasicMaterial({ wireframe: true, color: 0x00FF00, wireframeLinewidth: 0.1 });
@@ -105,6 +107,7 @@ module.exports = function(THREE, audioContext) {
 		};
 	
 		this.activate = function() {
+			// TODO: animate titles sizes/opacity or whatever
 			var now = audioContext.currentTime;
 			gain.start();
 		};
