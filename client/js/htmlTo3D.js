@@ -2,6 +2,7 @@ var THREE = require('n3d-threejs');
 var makeArray = require('make-array');
 var distributeObjects = require('./distribute-objects')(THREE);
 var Renderable = require('./Renderable')(THREE);
+var makeText = require('./makeText')(THREE);
 var colours = require('./colours');
 
 require('./vendor/helvetiker_regular.typeface.js');
@@ -69,27 +70,18 @@ function elementToRenderableObject(el, three, audioContext, nodeProperties) {
 }
 
 function elementToTextObject(el, THREE, nodeProperties) {
-
-	// This makes no freaking sense.
-	// "height" is actually the depth (in Z),
-	// "size" is the... thickness?
-	//  (╯°□°）╯︵ ┻━┻
-	
+		
 	var str = el.textContent;
 	var colour = nodeProperties.colour !== undefined ? nodeProperties.colour : 0xFF00FF;
 	
-	var geom = new THREE.TextGeometry(str, {
+	return makeText(str, {
 		size: nodeProperties.size,
-		height: 1,
-		curveSegments: 3
+		depth: 1,
+		curveSegments: 3,
+		wireframe: true,
+		color: colour,
+		lineWidth: 1
 	});
-
-	geom.computeBoundingBox();
-	geom.computeVertexNormals();
-	
-	var mat = new THREE.MeshBasicMaterial({ wireframe: true, color: colour, wireframeLinewidth: 1 });
-	var obj = new THREE.Mesh(geom, mat);
-	return obj;
 }
 
 module.exports = function(html, options) {

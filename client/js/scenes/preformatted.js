@@ -2,6 +2,7 @@ module.exports = function(THREE, audioContext) {
 
 	var Renderable = require('../Renderable')(THREE);
 	var distributeObjects = require('../distribute-objects')(THREE);
+	var makeText = require('../makeText')(THREE);
 	
 	function filterRawHTML(text) {
 		var out = text + '';
@@ -40,19 +41,17 @@ module.exports = function(THREE, audioContext) {
 			console.log(window._typeface_js.faces);
 			
 			lines.forEach(function(line) {
-				var geom = new THREE.TextGeometry(line, {
+				
+				var obj = makeText(line, {
 					font: 'Perfect DOS VGA 437 Win'.toLowerCase(),
 					weight: 'normal',
 					size: 7,
-					height: 0,
-					curveSegments: 2
+					depth: 0,
+					curveSegments: 2,
+					wireframe: true,
+					color: 0xFFFFFF,
+					linewidth: 1
 				});
-
-				geom.computeBoundingBox();
-				geom.computeVertexNormals();
-				
-				var mat = new THREE.MeshBasicMaterial({ wireframe: true, color: 0xFFFFFF, wireframeLinewidth: 1 });
-				var obj = new THREE.Mesh(geom, mat);
 
 				self.add(obj);
 				lineObjects.push(obj);

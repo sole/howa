@@ -4,6 +4,7 @@ module.exports = function(THREE, audioContext) {
 	var TransitionGain = require('./TransitionGain');
 	var colours = require('../colours');
 	var distributeObjects = require('../distribute-objects')(THREE);
+	var makeText = require('../makeText')(THREE);
 	
 	var nodes = {
 		'Generation': ['Oscillator', 'BufferSource', 'MediaElementAudioSource', 'MediaStreamAudioSource'],
@@ -11,22 +12,19 @@ module.exports = function(THREE, audioContext) {
 		'Analysis': ['Analyser']
 	};
 	
-	function makeText(str, options) {
+	function makeBox(str, options) {
 		
 		var colour = options.colour !== undefined ? options.colour : 0xFF0000;
 
-		var geom = new THREE.TextGeometry(str, {
+		var obj = makeText(str, {
 			size: 6,
-			height: 0,
-			curveSegments: 3
+			depth: 0,
+			curveSegments: 3,
+			wireframe: true,
+			color: colour
 		});
 
-		geom.computeBoundingBox();
-		geom.computeVertexNormals();
-		
-		var mat = new THREE.MeshBasicMaterial({ wireframe: true, color: colour, wireframeLinewidth: 1 });
-		var obj = new THREE.Mesh(geom, mat);
-
+		var geom = obj.geometry;
 		var size = geom.boundingBox.size();
 		var padSize = size.clone();
 		padSize.x += 4;
@@ -46,11 +44,11 @@ module.exports = function(THREE, audioContext) {
 	}
 
 	function makeTitle(text) {
-		return makeText(text, { colour: colours.primary2 });
+		return makeBox(text, { colour: colours.primary2 });
 	}
 
 	function makeNode(text) {
-		return makeText(text, { colour: colours.secondary1 });
+		return makeBox(text, { colour: colours.secondary1 });
 	}
 
 
