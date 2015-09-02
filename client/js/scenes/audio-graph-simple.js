@@ -2,6 +2,7 @@ module.exports = function(THREE, audioContext) {
 
 	var Renderable = require('../Renderable')(THREE);
 	var Graph = require('./Graph')(THREE, audioContext);
+	var TransitionGain = require('./TransitionGain');
 
 	var nodes = [
 		'Oscillator',
@@ -16,6 +17,9 @@ module.exports = function(THREE, audioContext) {
 
 		Renderable.call(this, audioContext);
 
+		var gain = TransitionGain(audioContext);
+		gain.connect(this.audioNode);
+
 		var graph = new Graph();
 		graph.setData(nodes, edges);
 		this.add(graph);
@@ -27,11 +31,17 @@ module.exports = function(THREE, audioContext) {
 		};
 
 		this.activate = function() {
-			console.log('activate audio graph scene');
+			oscillator = audioContext.createOscillator();
+			oscillator.connect(gain);
+			oscillator.start();
+			gain.start();
 		};
 
 		this.deactivate = function() {
-			console.log('deactivate audio graph scene');
+			gain.stop(function() {
+				oscillator.stop();
+				oscillator.disconnect();
+			});
 		};
 
 	}

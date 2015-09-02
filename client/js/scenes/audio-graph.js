@@ -44,11 +44,9 @@ module.exports = function(THREE, audioContext) {
 		};
 
 		this.activate = function() {
-			console.log('activate audio graph scene');
 		};
 
 		this.deactivate = function() {
-			console.log('deactivate audio graph scene');
 		};
 
 	}
