@@ -6,6 +6,7 @@ module.exports = function(THREE, audioContext) {
 	
 	function filterRawHTML(text) {
 		var out = text + '';
+		out = out.replace('\t', '    ');
 		out = out.replace('&lt;', '<');
 		out = out.replace('&gt;', '>');
 		return out;

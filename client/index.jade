@@ -84,13 +84,35 @@ html
 				img(src='data/img/modular-routing.png', data-replace='audio-graph')
 
 			section
-				h1 Instances are JS Objects
+				h1 The audio graph:
+				h2 sound modulation
 
 			section
-				h1 Audio Params
+				h2 Gain nodes
+				p multiply input by gain value
 
 			section
-				h1 No glitches
+				pre
+					code.
+						var gain = ac.createGain();
+			
+			section
+				pre
+					code.
+						var gain = ac.createGain();
+						var osc = ac.createOscillator();
+						osc.connect(gain);
+						gain.connect(ac.destination);
+
+			section
+				img(src='data/img/placeholder.png', data-replace='gain')
+				pre
+					code.
+						window.addEventListener('mousemove', function(e) {
+							var v = e.clientY / window.innerHeight;
+						    gain.gain.setValueAtTime(v, ac.currentTime);
+						});
+
 
 			section
 				h1 Modulation
