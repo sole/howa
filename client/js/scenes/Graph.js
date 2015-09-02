@@ -1,13 +1,22 @@
 module.exports = function(THREE, audioContext) {
 
 	var Renderable = require('../Renderable')(THREE);
+	var makeText = require('../makeText')(THREE);
 
 	function makeNode(text) {
-		var n = 5;
-		var mat = new THREE.MeshBasicMaterial({ wireframe: true, color: 0xFF00FF });
-		var geom = new THREE.BoxGeometry(n, n, n);
+		
+		var textObj = makeText(text);
+		textObj.geometry.center();
+
+		var box = textObj.geometry.boundingBox;
+		var size = box.size().clone().multiplyScalar(1.1);
+
+		var mat = new THREE.MeshBasicMaterial({ wireframe: true, color: 0xcccccc });
+		var geom = new THREE.BoxGeometry(size.x, size.y, size.z);
 		var obj = new THREE.Mesh(geom, mat);
-		return obj;
+		textObj.add(obj);
+
+		return textObj;
 	}
 
 	function makeEdge(node1, node2) {
