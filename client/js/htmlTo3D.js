@@ -10,6 +10,7 @@ require('./vendor/437_Win_Regular.typeface.js');
 
 var replacementScenes = {
 	'intro': require('./scenes/intro'),
+	'nodes-taxonomy': require('./scenes/nodes-taxonomy'),
 	'audio-graph': require('./scenes/audio-graph'),
 	'buffer-source': require('./scenes/buffer-source'),
 	'buffer-source-bending': require('./scenes/buffer-source-bending'),
@@ -86,7 +87,7 @@ function elementToTextObject(el, THREE, nodeProperties) {
 	geom.computeBoundingBox();
 	geom.computeVertexNormals();
 	
-	var mat = new THREE.MeshBasicMaterial({ wireframe: true, color: colour, wireframeLinewidth: 2 });
+	var mat = new THREE.MeshBasicMaterial({ wireframe: true, color: colour, wireframeLinewidth: 1 });
 	var obj = new THREE.Mesh(geom, mat);
 	return obj;
 }
