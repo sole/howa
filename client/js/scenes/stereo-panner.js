@@ -8,7 +8,6 @@ module.exports = function(THREE, audioContext) {
 		
 		Renderable.call(this, audioContext);
 
-		var maxGain = 0.25;
 		var oscillator;
 		var gain = TransitionGain(audioContext);
 		gain.connect(this.audioNode);
