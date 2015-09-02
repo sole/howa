@@ -55,6 +55,32 @@ html
 
 			section
 				h2 Simplest graph
+				pre
+					code.
+						var oscillator = ac.createOscillator();
+						oscillator.connect(ac.destination);
+
+			section
+				h2 Simplest graph
+				img(src='data/img/placeholder.png', data-replace='audio-graph-simple')
+
+			section
+				h2 More complex graph
+				pre
+					code.
+						var osc1 = ac.createOscillator();
+						var osc2 = ac.createOscillator();
+						var filter = ac.createBiquadFilter();
+						var shaper = ac.createWaveShaper();
+						var conv = ac.createConvolver();
+						osc1.connect(filter);
+						osc2.connect(shaper);
+						filter.connect(conv);
+						shaper.connect(conv);
+						conv.connect(ac.destination);
+	
+			section
+				h2 More complex graph
 				img(src='data/img/modular-routing.png', data-replace='audio-graph')
 
 			section

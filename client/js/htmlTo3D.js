@@ -13,6 +13,7 @@ var replacementScenes = {
 	'intro': require('./scenes/intro'),
 	'nodes-taxonomy': require('./scenes/nodes-taxonomy'),
 	'audio-graph': require('./scenes/audio-graph'),
+	'audio-graph-simple': require('./scenes/audio-graph-simple'),
 	'buffer-source': require('./scenes/buffer-source'),
 	'buffer-source-bending': require('./scenes/buffer-source-bending'),
 	'modulation': require('./scenes/modulation'),

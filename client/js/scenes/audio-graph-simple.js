@@ -12,29 +12,12 @@ module.exports = function(THREE, audioContext) {
 		[0, 1]
 	];
 
-	var nodes3 = [
-		'Oscillator', // 0
-		'Oscillator', // 1
-		'BiquadFilter', // 2
-		'WaveShaper', // 3
-		'Convolver', // 4
-		'Destination' // 5
-	];
-
-	var edges3 = [
-		[0, 2],
-		[1, 3],
-		[2, 4],
-		[3, 4],
-		[4, 5]
-	];
-
-	function SceneAudioGraph() {
+	function SceneAudioGraphSimple() {
 
 		Renderable.call(this, audioContext);
 
 		var graph = new Graph();
-		graph.setData(nodes3, edges3);
+		graph.setData(nodes, edges);
 		this.add(graph);
 
 		var lastTime = 0;
@@ -53,9 +36,10 @@ module.exports = function(THREE, audioContext) {
 
 	}
 
-	SceneAudioGraph.prototype = Object.create(Renderable.prototype);
-	SceneAudioGraph.prototype.constructor = SceneAudioGraph;
+	SceneAudioGraphSimple.prototype = Object.create(Renderable.prototype);
+	SceneAudioGraphSimple.prototype.constructor = SceneAudioGraphSimple;
 
-	return SceneAudioGraph;
+	return SceneAudioGraphSimple;
 	
 };
+
