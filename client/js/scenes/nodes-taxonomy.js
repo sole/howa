@@ -6,13 +6,15 @@ module.exports = function(THREE, audioContext) {
 	var distributeObjects = require('../distribute-objects')(THREE);
 	
 	var nodes = {
-		'Generation': ['Oscillator', 'BufferSource'],
-		'Manipulation': ['Filter'],
+		'Generation': ['Oscillator', 'BufferSource', 'MediaElementAudioSource', 'MediaStreamAudioSource'],
+		'Manipulation': ['BiquadFilter', 'Delay', 'Panner', 'StereoPanner', 'Convolver', 'DynamicsCompressor', 'WaveShaper'],
 		'Analysis': ['Analyser']
 	};
 	
-	function makeText(str) {
+	function makeText(str, options) {
 		
+		var colour = options.colour !== undefined ? options.colour : 0xFF0000;
+
 		var geom = new THREE.TextGeometry(str, {
 			size: 6,
 			height: 1,
@@ -22,7 +24,7 @@ module.exports = function(THREE, audioContext) {
 		geom.computeBoundingBox();
 		geom.computeVertexNormals();
 		
-		var mat = new THREE.MeshBasicMaterial({ wireframe: true, color: colours.primary1, wireframeLinewidth: 1 });
+		var mat = new THREE.MeshBasicMaterial({ wireframe: true, color: colour, wireframeLinewidth: 1 });
 		var obj = new THREE.Mesh(geom, mat);
 		
 		return obj;
@@ -30,11 +32,11 @@ module.exports = function(THREE, audioContext) {
 	}
 
 	function makeTitle(text) {
-		return makeText(text);
+		return makeText(text, { colour: colours.primary2 });
 	}
 
 	function makeNode(text) {
-		return makeText(text);
+		return makeText(text, { colour: colours.secondary1 });
 	}
 
 
@@ -46,13 +48,6 @@ module.exports = function(THREE, audioContext) {
 		var oscillator;
 		var gain = TransitionGain(audioContext);
 		gain.connect(this.audioNode);
-
-		var mat = new THREE.MeshBasicMaterial({ wireframe: true, color: colours.secondary1 });
-		var n = 5;
-		var geom = new THREE.SphereGeometry(n);
-		var mesh = new THREE.Mesh(geom, mat);
-		mesh.position.y -= n * 4;
-		this.add(mesh);
 
 		var taxonomy3D = new THREE.Object3D();
 		this.add(taxonomy3D);
@@ -90,12 +85,11 @@ module.exports = function(THREE, audioContext) {
 		box.setFromObject(taxonomy3D);
 		var boxSize = box.size();
 		taxonomy3D.position.x -= boxSize.x  / 2;
-		taxonomy3D.position.y -= boxSize.y;
+		taxonomy3D.position.y -= boxSize.y / 4;
 
 		this.render = function(time) {
 			var now = audioContext.currentTime;
 			var pos = Math.sin(time * 0.001);
-			mesh.position.x = pos * 80;
 		};
 	
 		this.activate = function() {
