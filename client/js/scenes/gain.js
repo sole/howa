@@ -28,7 +28,7 @@ module.exports = function(THREE, audioContext) {
 
 		this.render = function(time) {
 			var now = audioContext.currentTime;
-			var v = mouseInput.y * 4;
+			var v = mouseInput.y;
 			var s = v * 20;
 			controllableGain.gain.setValueAtTime(v, now);
 			mesh.scale.set(s, s, s);
