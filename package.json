@@ -28,6 +28,7 @@
     "gulp-watch": "^4.2.4",
     "lerp": "^1.0.3",
     "make-array": "^0.1.2",
+    "midiutils": "0.0.4",
     "n3d-threejs": "^70.0.0",
     "openmusic-sample-player": "^1.5.0",
     "tween.js": "^15.0.0",

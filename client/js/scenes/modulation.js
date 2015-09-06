@@ -2,7 +2,7 @@ module.exports = function(THREE, audioContext) {
 
 	var colours = require('../colours');
 	var Renderable = require('../Renderable')(THREE);
-	var TransitionGain = require('./TransitionGain')
+	var TransitionGain = require('./TransitionGain');
 	var unlerp = require('unlerp');
 	
 
