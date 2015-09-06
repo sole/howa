@@ -30,7 +30,7 @@ module.exports = function(THREE, audioContext) {
 			var now = audioContext.currentTime;
 			var v = mouseInput.y;
 			var s = v * 20;
-			controllableGain.gain.setValueAtTime(v, now);
+			controllableGain.gain.linearRampToValueAtTime(v, now);
 			mesh.scale.set(s, s, s);
 		};
 	
