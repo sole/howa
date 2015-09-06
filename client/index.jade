@@ -166,6 +166,49 @@ html
 				h1 Modulation
 				img(src='data/img/placeholder.png', data-replace='modulation')
 
+			
+			section
+				h2 the Web Audio promise:
+				h1 Low latency +
+				h1 Sample accurate playback
+				p but how?
+
+			section
+				h1 Web Audio has its own thread
+
+			section
+				h2 Web Audio 'just'
+				h1 processes scheduled events
+
+			section
+				h2 Node instances:
+				h1 akin to utilities to schedule events
+
+			section
+				p events = (mostly) value changes
+				pre
+					code.
+						osc.start(2.0);
+						osc.frequency.setValueAtTime(440, 3.5);
+						osc.frequency.linearRampToValueAtTime(880, 13.5);
+						gain.gain.exponentialRampToValueAtTime(0, 13.5);
+
+			section
+				p fact 1
+				h1 Web Audio is schedule driven
+
+			section
+				p fact 2
+				h1 creating and throwing nodes away is cheap
+
+			section
+				p fact 3
+				h1 keeping track of state is expensive
+
+			section
+				h1 just don't keep references to nodes
+				h2 (to avoid memory leaks)
+
 			section
 				h1 Some built-in nodes
 
