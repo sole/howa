@@ -21,6 +21,7 @@ module.exports = function ForceLayout(graph, options) {
 	this.height = options.height || 200;
 	this.finished = false;
 	this.iterations = 0;
+	this.boundingBox = options.boundingBox;
 
 	var callback_positionUpdated = options.onNodePositionUpdated || function() { }, // Empty callback--avoids using if's
 		EPSILON = 0.000001,
@@ -119,6 +120,7 @@ module.exports = function ForceLayout(graph, options) {
 		}
 
 		// calculate positions
+		var boundingBox = this.boundingBox;
 		for(i = 0; i < nodesLength; i++) {
 
 			var node = graph.nodes[i];
@@ -129,6 +131,10 @@ module.exports = function ForceLayout(graph, options) {
 
 			node.layout.tmpPosition.add(node.layout.offset.clone().multiplyScalar(coolFactor));
 			node.position.sub(node.position.clone().sub(node.layout.tmpPosition).multiplyScalar(multiplier));
+
+			if(boundingBox !== undefined && !boundingBox.containsPoint(node.position)) {
+				node.position.clamp(boundingBox.min, boundingBox.max);
+			}
 
 			callback_positionUpdated(node);
 

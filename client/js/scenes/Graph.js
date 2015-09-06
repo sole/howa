@@ -53,7 +53,7 @@ module.exports = function(THREE, audioContext) {
 			self.add(node);
 
 			// TMP
-			var n = 30;
+			var n = 2;
 			node.position.x = n * Math.random();
 			node.position.y = n * Math.random();
 
@@ -71,10 +71,18 @@ module.exports = function(THREE, audioContext) {
 		this.edges3D = edges3D;
 		this.edges = edges;
 
+		var w = 60, h = w / 2, d = h;
+		var boundingBox = new THREE.Box3(new THREE.Vector3(-w, -h, -d), new THREE.Vector3(w, h, d));
+
 		this.layout = new ForceLayout({
 			nodes: nodes3D,
 			edges: edges3D
 		}, {
+			width: w,
+			height: h,
+			attraction: 2.5,
+			//repulsion: 0.9,
+			boundingBox: boundingBox,
 			onNodePositionUpdated: function( node ) {
 				// node.updateLinksGeometry();
 			}
