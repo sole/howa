@@ -31,7 +31,17 @@ module.exports = function(THREE, audioContext) {
 
 	function decodeBirdSamples(audioContext, binarySamples) {
 		var decodedSamples = binarySamples.map(function(binary) {
-			return audioContext.decodeAudioData(binary.toArrayBuffer());
+			return new Promise(function(ok, fail) {
+				audioContext.decodeAudioData(
+					binary.toArrayBuffer(),
+					function success(buffer) {
+						ok(buffer);
+					},
+					function error(e) {
+						fail(e);
+					}
+				);
+			});
 		});
 		return Promise.all(decodedSamples);
 	}
