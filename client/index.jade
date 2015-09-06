@@ -136,6 +136,34 @@ html
 
 			section
 				h1 Modulation
+				h2 connect() to node properties
+
+			section
+				p or...
+				
+			section
+				h1 audio as input data
+
+			section
+				pre
+					code.
+						var lfoOsc = ac.createOscillator();
+						var lfoGain = ac.createGain();
+						lfoOsc.connect(lfoGain);
+						lfoGain.gain.setValueAtTime(10, now);
+						// lfoGain outputs [-10, 10]
+
+			section
+				pre
+					code.
+						var osc = ac.createOscillator();
+						lfoGain.connect(osc.frequency);
+						osc.frequency.setValueAtTime(100, now);
+						// osc oscillates at [90, 110]
+
+
+			section
+				h1 Modulation
 				img(src='data/img/placeholder.png', data-replace='modulation')
 
 			section
