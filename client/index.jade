@@ -307,6 +307,7 @@ html
 			section
 				h1 StereoPanner
 				h2 Place sounds in 2D space
+				// music players-adjusting balance, or music mixers
 
 			section
 				h1 StereoPanner
@@ -323,6 +324,35 @@ html
 
 			section
 				h1 Panner
+				h2 Place sounds in 3D space
+				// VR, simulations, games
+
+			section
+				h1 Understanding panning
+				h2 there is a listener (us)
+				pre
+					code.
+						ac.listener
+				h2 and one or more positioned sources of sound
+				pre
+					code.
+						var panned = ac.createPanner();
+						osc.connect(panned);
+
+
+			section
+				// If the listener is close to a sound, it will be louder, etc.
+				// Each time you update your game enemies, or when your character walks around,
+				// you need to update the positions for the sounds to come from the right place
+				h2 update positions for accurate placement
+				pre
+					code.
+						ac.listener.setPosition(100, 0, 0);
+						panned.setPosition(0, 0, 0);
+
+			section
+				h1 Panner
+				h2 3D flock
 				img(src='data/img/placeholder.png', data-replace='panner')
 
 			section
