@@ -18,10 +18,21 @@ html
 				h1 Hands-On Web Audio
 				h2 Soledad Penades
 				img(src='data/img/placeholder.png', data-replace='intro')
-			
+
+			section
+				h1 Web Audio is like a tiny new language
+				h2 small vocabulary
+				h2 few grammar rules
+				h2 and a couple of idioms
+
+			// Web Audio is a completely different beast
+			// Like speaking a new language
+			// You need to master the idioms to properly speak a language
+			// Once you understand these techniques you can pave your own way in Web Audio land
+
 			section
 				h1 AudioContext
-				h2 Where we start, and
+				h2 where we start
 				h2 where everything happens
 
 			section
@@ -31,12 +42,8 @@ html
 
 			section
 				h1 AudioContext
-				h2 Also as a toolbox
+				h2 As a toolbox
 				p "instance factory"
-
-			section
-				h1 Nodes taxonomy
-				img(src='data/img/placeholder.png', data-replace='nodes-taxonomy')
 
 			section
 				pre
@@ -46,18 +53,24 @@ html
 						// etc...
 
 			section
+				h1 Nodes taxonomy
+				img(src='data/img/placeholder.png', data-replace='nodes-taxonomy')
+
+			section
 				h1 AudioContext
 				h2 As audio graph container
 
 			section
-				h1 The audio graph:
-				h1 modular routing
+				p introducing the most important method in nodes
 
 			section
 				pre
 					code.
 						connect()
 
+			section
+				h1 Modular routing
+			
 			section
 				h2 Simplest graph
 				pre
@@ -103,12 +116,37 @@ html
 				h2 More complex graph
 				img(src='data/img/modular-routing.png', data-replace='audio-graph')
 
-			section
-				h1 The audio graph:
-				h2 sound modulation
+			// It's cool to assemble these but there's another cool thing to talk about...
 
 			section
-				h2 Gain nodes
+				h1 Sound modulation
+	
+			section
+				p or...
+				
+			section
+				h1 audio as input data
+
+			section
+				p instead of connecting node to node,
+
+			section
+				h2 connect() node to node properties
+				p adds node output to node param
+
+			// so then property values are not stable/fixed but can fluctuate
+
+			// sound sources such as oscillators
+			section
+				p but sound sources only output [-1, 1]
+
+			section
+				h2 a [-1, 1] fluctuation
+				p is barely audible in most contexts!
+
+			section
+				h2 solution:
+				h1 Gain nodes
 				p multiply input by gain value
 
 			section
@@ -123,6 +161,8 @@ html
 						var osc = ac.createOscillator();
 						osc.connect(gain);
 						gain.connect(ac.destination);
+						gain.gain.value = 100;
+						// osc out [-100, 100] now
 
 			section
 				img(src='data/img/placeholder.png', data-replace='gain')
@@ -132,17 +172,6 @@ html
 							var v = e.clientY / window.innerHeight;
 						    gain.gain.setValueAtTime(v, ac.currentTime);
 						});
-
-
-			section
-				h1 Modulation
-				h2 connect() to node properties
-
-			section
-				p or...
-				
-			section
-				h1 audio as input data
 
 			section
 				pre
@@ -161,12 +190,16 @@ html
 						osc.frequency.setValueAtTime(100, now);
 						// osc oscillates at [90, 110]
 
-
 			section
 				h1 Modulation
 				img(src='data/img/placeholder.png', data-replace='modulation')
 
-			
+			section
+				h1 Corollary
+				p You can build pretty complex graphs...
+				h2 + adding node outputs to param input
+				h2 * multiplying outputs with Gain nodes
+
 			section
 				h2 the Web Audio promise:
 				h1 Low latency +
@@ -180,6 +213,7 @@ html
 				h2 Web Audio 'just'
 				h1 processes scheduled events
 
+			// nodes not only help build the node graph
 			section
 				h2 Node instances:
 				h1 akin to utilities to schedule events
@@ -205,6 +239,7 @@ html
 				p fact 3
 				h1 keeping track of state is expensive
 
+			// don't keep references... once done with them
 			section
 				h1 just don't keep references to nodes
 				h2 (to avoid memory leaks)

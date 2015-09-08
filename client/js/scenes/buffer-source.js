@@ -12,7 +12,7 @@ module.exports = function(THREE, audioContext) {
 		gain.connect(this.audioNode);
 
 		var amenLoop = AmenLoop(audioContext);
-		amenLoop.connect(gain);
+
 		amenLoop.sampler.loop = true;
 
 		this.render = function(time) {
@@ -21,12 +21,14 @@ module.exports = function(THREE, audioContext) {
 	
 		this.activate = function() {
 			gain.start();
+			amenLoop.connect(gain);
 			amenLoop.start();
 		};
 
 		this.deactivate = function() {
 			gain.stop(function() {
 				amenLoop.stop();
+				amenLoop.disconnect();
 			});
 
 		};

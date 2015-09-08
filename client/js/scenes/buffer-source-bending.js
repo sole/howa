@@ -15,7 +15,7 @@ module.exports = function(THREE, audioContext) {
 		gain.connect(this.audioNode);
 
 		var amenLoop = AmenLoop(audioContext);
-		amenLoop.connect(gain);
+
 		amenLoop.sampler.loop = true;
 
 		var mouseInput = new MouseInput();
@@ -42,12 +42,14 @@ module.exports = function(THREE, audioContext) {
 	
 		this.activate = function() {
 			gain.start();
+			amenLoop.connect(gain);
 			amenLoop.start();
 			mouseInput.start();
 		};
 
 		this.deactivate = function() {
 			gain.stop(function() {
+				amenLoop.disconnect();
 				amenLoop.stop();
 			});
 			mouseInput.stop();

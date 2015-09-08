@@ -4,15 +4,18 @@ var colours = require('../colours');
 module.exports = function(THREE, audioContext) {
 
 	var Renderable = require('../Renderable')(THREE);
+	var TransitionGain = require('./TransitionGain');
+	var WebAudioThx = require('./publish_me/web-audio-thx');
 	
 	function SceneAudioContext() {
 		
-		var WebAudioThx = require('./publish_me/web-audio-thx');
-
 		Renderable.call(this, audioContext);
 
-		this.thx = new WebAudioThx(audioContext);
-		this.thx.connect(this.audioNode);
+		var gain = TransitionGain(audioContext);
+		gain.connect(this.audioNode);
+
+		//this.thx = new WebAudioThx(audioContext);
+		//this.thx.connect(this.audioNode);
 
 		var transitionTween = null;
 		var transitionLength = 2500;
@@ -34,6 +37,11 @@ module.exports = function(THREE, audioContext) {
 		}
 	
 		this.activate = function() {
+
+			gain.start();
+
+			this.thx = new WebAudioThx(audioContext);
+			this.thx.connect(gain);
 			this.thx.start();
 
 			hemisphereMat.opacity = 0;
@@ -51,13 +59,18 @@ module.exports = function(THREE, audioContext) {
 		};
 
 		this.deactivate = function() {
+		
+			var self = this;
+			
 			this.thx.stop();
+			gain.stop(function() {
+				self.thx.disconnect();
+				self.thx = null;
+			});
 
 			if(transitionTween !== null) {
 				transitionTween.stop();
 			}
-
-			var self = this;
 			
 			transitionTween = new TWEEN.Tween({ opacity: hemisphereMat.opacity })
 				.to({ opacity: 0 }, transitionLength)

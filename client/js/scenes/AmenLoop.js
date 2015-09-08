@@ -23,16 +23,18 @@ module.exports = function AmenLoop(audioContext) {
 	node = audioContext.createGain();
 
 	sampler = SamplePlayer(audioContext);
-	sampler.connect(node);
+
 	sampler.buffer = decodedSample;
 	node.sampler = sampler;
 
 	node.start = function() {
 		sampler.start();
+		sampler.connect(node);
 	};
 
 	node.stop = function() {
 		sampler.stop();
+		sampler.disconnect();
 	};
 
 	return node;
