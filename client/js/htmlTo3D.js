@@ -21,7 +21,8 @@ var replacementScenes = {
 	'modulation': require('./scenes/modulation'),
 	'stereo-panner': require('./scenes/stereo-panner'),
 	'panner': require('./scenes/panner'),
-	'preformatted': require('./scenes/preformatted')
+	'preformatted': require('./scenes/preformatted'),
+	'biquadfilter': require('./scenes/biquadfilter')
 };
 
 var knownNodes = {

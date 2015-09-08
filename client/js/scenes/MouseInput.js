@@ -13,11 +13,21 @@ module.exports = function() {
 		self.y = (h - mouseY) / h;
 	}
 
+	function onClick(event) {
+		self.click(event);
+	}
+
+	// This can be overriden by instances
+	this.click = function(event) {
+	};
+
 	this.start = function() {
 		window.addEventListener('mousemove', onMouseMove);
+		window.addEventListener('click', onClick);
 	};
 
 	this.stop = function() {
 		window.removeEventListener('mousemove', onMouseMove);
+		window.removeEventListener('click', onClick);
 	};
 };

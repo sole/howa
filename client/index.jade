@@ -355,11 +355,23 @@ html
 				h2 3D flock
 				img(src='data/img/placeholder.png', data-replace='panner')
 
-			section
-				h1 Convolver
+			//section
+			//	h1 Convolver
 
 			section
 				h1 BiquadFilter
+				h2 Let certain frequencies pass
+
+			section
+				h1 BiquadFilter
+				pre
+					code.
+						var filter = ac.createBiquadFilter();
+						filter.type = 'highpass';
+						filter.connect(ac.destination);
+						bufferSource.connect(filter);
+						bufferSource.start();
+				img(src='data/img/placeholder.png', data-replace='biquadfilter')
 
 			section
 				h1 MediaStreamAudioSource
