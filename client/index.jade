@@ -287,6 +287,7 @@ html
 				img(src='data/img/placeholder.png', data-replace='buffer-source')
 
 
+			// But buffer sources can do more than just plain playback. With...
 			section
 				pre
 					code.
@@ -295,7 +296,7 @@ html
 
 			section
 				h1 BufferSource
-				h2 with pitch bending!
+				h2 can do pitch bending!
 				pre
 					code.
 						var now = ac.currentTime;
@@ -305,6 +306,19 @@ html
 
 			section
 				h1 StereoPanner
+				h2 Place sounds in 2D space
+
+			section
+				h1 StereoPanner
+				pre
+					code.
+						var osc = ac.createOscillator();
+						var stereoPanner = ac.createStereoPanner();
+						osc.connect(stereoPanner);
+						// left
+						stereoPanner.pan.setValueAtTime(-1, now);
+						// or right
+						stereoPanner.pan.setValueAtTime(1, now);
 				img(src='data/img/placeholder.png', data-replace='stereo-panner')
 
 			section
