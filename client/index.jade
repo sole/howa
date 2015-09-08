@@ -201,6 +201,9 @@ html
 				h2 * multiplying outputs with Gain nodes
 
 			section
+				h1 Performance
+
+			section
 				h2 the Web Audio promise:
 				h1 Low latency +
 				h1 Sample accurate playback
@@ -241,19 +244,63 @@ html
 
 			// don't keep references... once done with them
 			section
-				h1 just don't keep references to nodes
-				h2 (to avoid memory leaks)
+				h1 1
+				h2 don't keep references to nodes
+				p (to avoid memory leaks)
 
+			section
+				h1 2
+				h2 stop and disconnect sound sources
+				p (so they're disposed of)
+
+			// We've had a glimpse of W.a. functionalities, let's have a look
+			// at what else can we do...
 			section
 				h1 Some built-in nodes
 
+			// Oscillators aren't the only way to generate sound, buffer sources let you play samples
+			// AKA 'pre-recorded' or digitalised data
 			section
 				h1 BufferSource
+				h2 Playing sound samples
+
+			section
+				h1 BufferSource
+				h2 Three steps process:
+				// XHR/inline
+				p Load binary sample data
+				// anything the browser can play W.A. can play
+				p Decode
+				// As many times as you want!
+				p Use it!
+
+			section
+				h1 BufferSource
+				pre
+					code.
+						magicallyLoadAndDecode(binary, function(decodedBuffer) {
+							var bufferSource = ac.createBufferSource();
+						    bufferSource.buffer = decodedBuffer;
+						    bufferSource.connect(ac);
+						    bufferSource.start();
+						});
 				img(src='data/img/placeholder.png', data-replace='buffer-source')
+
+
+			section
+				pre
+					code.
+						bufferSource.playbackRate
+				
 
 			section
 				h1 BufferSource
 				h2 with pitch bending!
+				pre
+					code.
+						var now = ac.currentTime;
+						var y = getMouseY();
+						bufferSource.playbackRate.setValueAtTime(y, now);
 				img(src='data/img/placeholder.png', data-replace='buffer-source-bending')
 
 			section

@@ -22,11 +22,11 @@ module.exports = function(THREE, audioContext) {
 
 		var mat = new THREE.MeshBasicMaterial({ wireframe: true, color: colours.secondary1 });
 		var n = 100;
-		var geom = new THREE.CylinderGeometry(n, n, 0.5, 16, 1);
+		var geom = new THREE.CylinderGeometry(n, n, 0.5, 24, 1);
 		var mesh = new THREE.Mesh(geom, mat);
 		this.add(mesh);
 
-		mesh.position.y = -20;
+		mesh.position.y = -30;
 
 		var lastTime = 0;
 		this.render = function(time) {
@@ -35,7 +35,6 @@ module.exports = function(THREE, audioContext) {
 			var now = audioContext.currentTime;
 			var pitchBendValue = lerp(-1, 1, mouseInput.y);
 			mesh.rotation.y -= Math.max(0, (elapsed*0.06 + pitchBendValue ) * 0.025);
-
 
 			amenLoop.sampler.pitchBend.setValueAtTime(pitchBendValue, now);
 		};
