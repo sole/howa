@@ -1,6 +1,7 @@
 module.exports = function(THREE, audioContext) {
 
 	var Renderable = require('../Renderable')(THREE);
+	var TransitionGain = require('./TransitionGain');
 	var Boid = require('./publish_me/Boid')(THREE);
 	var BirdGeometry = require('./publish_me/BirdGeometry')(THREE);
 	var SamplePlayer = require('openmusic-sample-player');
@@ -8,10 +9,10 @@ module.exports = function(THREE, audioContext) {
 	var Promise = require('es6-promise').Promise;
 	var colours = require('../colours');
 	
-	var birdSample1 = fs.readFileSync(__dirname + '/birds/bird01.ogg');
-	var birdSample2 = fs.readFileSync(__dirname + '/birds/bird02.ogg');
-	var birdSample3 = fs.readFileSync(__dirname + '/birds/bird03.ogg');
-	var birdSample4 = fs.readFileSync(__dirname + '/birds/bird04.ogg');
+	//var birdSample1 = fs.readFileSync(__dirname + '/birds/bird01.ogg');
+	//var birdSample2 = fs.readFileSync(__dirname + '/birds/bird02.ogg');
+	//var birdSample3 = fs.readFileSync(__dirname + '/birds/bird03.ogg');
+	//var birdSample4 = fs.readFileSync(__dirname + '/birds/bird04.ogg');
 	var birdSample5 = fs.readFileSync(__dirname + '/birds/bird05.ogg');
 	var birdSample6 = fs.readFileSync(__dirname + '/birds/bird06.ogg');
 	var birdSample7 = fs.readFileSync(__dirname + '/birds/bird07.ogg');
@@ -23,6 +24,7 @@ module.exports = function(THREE, audioContext) {
 		birdSample3,
 		birdSample4,*/
 		birdSample5, birdSample6, birdSample7, birdSample8 ];
+	
 	var decodedBirdSamples = [];
 
 	function getRandom(maxValue) {
@@ -49,6 +51,8 @@ module.exports = function(THREE, audioContext) {
 	function Panner() {
 
 		Renderable.call(this, audioContext);
+		var gain = TransitionGain(audioContext);
+		gain.connect(this.audioNode);
 
 		var maxGain = 0.95;
 		var birds = [];
@@ -68,8 +72,8 @@ module.exports = function(THREE, audioContext) {
 
 		this.add(cage);
 			
-		var gain = audioContext.createGain();
-		gain.connect(this.audioNode);
+		//var gain = audioContext.createGain();
+
 		var birdSink = audioContext.createGain();
 		birdSink.gain.setValueAtTime(maxGain, audioContext.currentTime);
 
@@ -167,28 +171,14 @@ module.exports = function(THREE, audioContext) {
 		};
 	
 		this.activate = function() {
-			
-			// This is such a terrible hack 8-)
-			//this.parent.contentsObject.add(cage);
-
-			
-			var now = audioContext.currentTime;
 			birdSink.connect(gain);
-			gain.gain.cancelScheduledValues(now);
-			gain.gain.setValueAtTime(0, now);
-			gain.gain.linearRampToValueAtTime(maxGain, now + 1);
+			gain.start();
 		};
 
 		this.deactivate = function() {
-			var now = audioContext.currentTime;
-			var t = 2;
-			gain.gain.cancelScheduledValues(now);
-			gain.gain.linearRampToValueAtTime(0, now + t);
-			//var self = this;
-			setTimeout(function() {
-			//	self.parent.contentsObject.remove(cage);
+			gain.stop(function() {
 				birdSink.disconnect();
-			}, (t+0.5) * 1000);
+			});
 		};
 
 	}
