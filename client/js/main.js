@@ -29,6 +29,9 @@ function init() {
 			// F key
 		} else if(keyCode === 70) {
 			toggleFullScreen();
+		} else if(keyCode === 51) {
+			// 3 key
+			slides.toggleAnaglyph();
 		}
 
 	}, false);

@@ -6,8 +6,11 @@ var htmlTo3D = require('./htmlTo3D');
 var distributeObjects = require('./distribute-objects')(THREE);
 var colours = require('./colours');
 
-window.THREE = THREE; // urgh, but required for the include below
+window.THREE = THREE; // urgh, but required for the includes below
 var TrackballControls = require('./vendor/TrackballControls');
+var AnaglyphEffect = require('./vendor/AnaglyphEffect');
+
+// ---
 
 function tweenObject(object, destination, duration) {
 	var tween = object.__internalTween;
@@ -44,22 +47,37 @@ function Threedees() {
 	var scene;
 	var camera;
 	var cameraTarget;
+	var anaglyphEffect;
 	var controls;
 	var threeDeeSlides;
 	var threeDeeWorld;
 	var currentSlideNumber = -1;
+	var currentRenderer = null;
 	var audioContext;
 
 	EventEmitter.call(this);
+
+	function callCurrentRenderer(scene, camera) {
+		currentRenderer.call(scene, camera);
+	}
 
 	this.init = function(htmlSlides) {
 
 		audioContext = new AudioContext();
 		limiter = audioContext.createDynamicsCompressor();
 
-		renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
-		renderer.setPixelRatio(window.devicePixelRatio);
+		var cheapRenderer = false;
+
+		if(cheapRenderer) {
+			renderer = new THREE.WebGLRenderer({});
+		} else {
+			renderer = new THREE.WebGLRenderer({ antialias: true /*, preserveDrawingBuffer: true*/ });
+			renderer.setPixelRatio(window.devicePixelRatio);
+		}
 		renderer.setClearColor(colours.background, 1.0);
+
+
+
 		//renderer.shadowMapEnabled = true;
 		//renderer.shadowMapSoft = true;
 
@@ -68,6 +86,10 @@ function Threedees() {
 
 		scene = new THREE.Scene();
 		// scene.add(new THREE.AmbientLight(0x444444));
+		//
+		anaglyphEffect = new THREE.AnaglyphEffect(renderer);
+
+		currentRenderer = anaglyphEffect;
 
 		camera = new THREE.PerspectiveCamera(60, 320 / 200, 1, 100000);
 		cameraTarget = new THREE.Vector3(0, 0, 0);
@@ -151,8 +173,17 @@ function Threedees() {
 		renderer.setSize(w, h);
 		rendererWidth = w;
 		rendererHeight = h;
+		anaglyphEffect.setSize(w, h);
 		camera.aspect = w / h;
 		camera.updateProjectionMatrix();
+	};
+
+	this.toggleAnaglyph = function() {
+		if(currentRenderer === renderer) {
+			currentRenderer = anaglyphEffect;
+		} else {
+			currentRenderer = renderer;
+		}
 	};
 
 	this.render = function(time) {
@@ -164,7 +195,11 @@ function Threedees() {
 		}
 		TWEEN.update(time);
 		camera.lookAt(cameraTarget);
-		renderer.render(scene, camera);
+		
+		currentRenderer.render(scene, camera);
+
+		//renderer.render(scene, camera);
+		//anaglyphEffect.render(scene, camera);
 	};
 
 	this.show = function(slideNumber) {
