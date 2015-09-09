@@ -1,10 +1,11 @@
 module.exports = function(audioContext) {
 
 	var node = audioContext.createGain();
-	var maxGain = 0.25;
-	var transitionLength = 1.5;
+	var maxGain = 0.5;
+	var transitionLength = 1.0;
 
 	node.start = function() {
+		
 		var now = audioContext.currentTime;
 		node.gain.setValueAtTime(0, now);
 		node.gain.linearRampToValueAtTime(maxGain, now + transitionLength);

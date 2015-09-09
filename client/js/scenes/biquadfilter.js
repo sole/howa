@@ -20,7 +20,7 @@ module.exports = function(THREE, audioContext) {
 			//"highshelf",
 			//"peaking",
 			"notch",
-			"allpass"
+			//"allpass"
 		];
 		var currentType = 0;
 		

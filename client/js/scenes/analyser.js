@@ -4,7 +4,7 @@ module.exports = function(THREE, audioContext) {
 	var AmenLoop = require('./AmenLoop');
 	var TransitionGain = require('./TransitionGain');
 	var MouseInput = require('./MouseInput');
-
+	var colours = require('../colours');
 	var Oscilloscope = require('./Oscilloscope')(THREE);
 
 	
@@ -22,7 +22,7 @@ module.exports = function(THREE, audioContext) {
 			//"highshelf",
 			//"peaking",
 			"notch",
-			"allpass"
+			//"allpass"
 		];
 		var currentType = 0;
 		
@@ -33,9 +33,8 @@ module.exports = function(THREE, audioContext) {
 		var amenLoop = AmenLoop(audioContext);
 		var filter = audioContext.createBiquadFilter();
 		var now = audioContext.currentTime;
-		console.log('current', now);
+		filter.Q.setValueAtTime(5, now);
 		filter.frequency.setValueAtTime(maxFrequency * 0.5, now);
-		console.log(maxFrequency);
 
 		amenLoop.connect(filter);
 		amenLoop.sampler.loop = true;
@@ -46,6 +45,9 @@ module.exports = function(THREE, audioContext) {
 		analyser.smoothingTimeConstant = 0.5;
 		analyserData = new Uint8Array(analyser.frequencyBinCount);
 		var oscilloscopeData = new Float32Array(512);
+		var analyserFunctions = [ analyser.getByteFrequencyData, analyser.getByteTimeDomainData ];
+		var currentAnalyserFunction = analyser.getByteFrequencyData;
+		var currentAnalyserFunctionIndex = 0;
 
 		filter.connect(analyser);
 
@@ -55,20 +57,33 @@ module.exports = function(THREE, audioContext) {
 			filter.type = filterTypes[++currentType % filterTypes.length];
 		};
 
+		mouseInput.doubleClick = function() {
+			currentAnalyserFunctionIndex = ++currentAnalyserFunctionIndex % analyserFunctions.length;
+			currentAnalyserFunction = analyserFunctions[currentAnalyserFunctionIndex];
+		};
+
 		var oscilloscope = new Oscilloscope();
+		oscilloscope.initialise({
+			width: 150,
+			color: colours.primary2,
+			lineWidth: 3
+		});
 		this.add(oscilloscope);
 
 		this.render = function(time) {
 			var now = audioContext.currentTime;
 			var f = mouseInput.y * maxFrequency;
 			filter.frequency.setValueAtTime(f, now);
-			analyser.getByteFrequencyData(analyserData);
+			// analyser.getByteFrequencyData(analyserData);
+			// analyser.getByteTimeDomainData(analyserData);
+			currentAnalyserFunction.call(analyser, analyserData);
 			updateVisualisation(analyserData);
 		};
 	
 		this.activate = function() {
 			gain.start();
 			analyser.connect(gain);
+			amenLoop.stop();
 			amenLoop.start();
 			mouseInput.start();
 		};

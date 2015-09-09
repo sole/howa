@@ -17,17 +17,28 @@ module.exports = function() {
 		self.click(event);
 	}
 
-	// This can be overriden by instances
+	function onDoubleClick(event) {
+		self.doubleClick(event);
+	}
+
+
+	// These can be overriden by instances
 	this.click = function(event) {
 	};
+
+	this.doubleClick = function(event) {
+	};
+
 
 	this.start = function() {
 		window.addEventListener('mousemove', onMouseMove);
 		window.addEventListener('click', onClick);
+		window.addEventListener('dblclick', onDoubleClick);
 	};
 
 	this.stop = function() {
 		window.removeEventListener('mousemove', onMouseMove);
 		window.removeEventListener('click', onClick);
+		window.removeEventListener('dblclick', onDoubleClick);
 	};
 };

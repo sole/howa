@@ -386,6 +386,16 @@ html
 
 			section
 				h1 Analyser
+				pre
+					code.
+						var analyser = ac.createAnalyser();
+						bufferSource.connect(analyser);
+						analyser.connect(ac.destination);
+						var results = new Uint8Array(analyser.frequencyBinCount);
+						analyser.getByteFrequencyData(results);
+
+			section
+				h1 Analyser
 				img(src='data/img/placeholder.png', data-replace='analyser')
 
 			section
