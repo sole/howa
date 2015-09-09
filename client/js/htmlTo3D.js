@@ -22,7 +22,8 @@ var replacementScenes = {
 	'stereo-panner': require('./scenes/stereo-panner'),
 	'panner': require('./scenes/panner'),
 	'preformatted': require('./scenes/preformatted'),
-	'biquadfilter': require('./scenes/biquadfilter')
+	'biquadfilter': require('./scenes/biquadfilter'),
+	'analyser': require('./scenes/analyser')
 };
 
 var knownNodes = {

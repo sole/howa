@@ -5,8 +5,10 @@ module.exports = function(THREE, audioContext) {
 	var TransitionGain = require('./TransitionGain');
 	var MouseInput = require('./MouseInput');
 
+	var Oscilloscope = require('./Oscilloscope')(THREE);
+
 	
-	function BiquadFilter() {
+	function Analyser() {
 		
 		Renderable.call(this, audioContext);
 
@@ -30,9 +32,22 @@ module.exports = function(THREE, audioContext) {
 
 		var amenLoop = AmenLoop(audioContext);
 		var filter = audioContext.createBiquadFilter();
+		var now = audioContext.currentTime;
+		console.log('current', now);
+		filter.frequency.setValueAtTime(maxFrequency * 0.5, now);
+		console.log(maxFrequency);
 
 		amenLoop.connect(filter);
 		amenLoop.sampler.loop = true;
+
+		var analyser = audioContext.createAnalyser();
+		var analyserData;
+		analyser.fftSize = 2048;
+		analyser.smoothingTimeConstant = 0.5;
+		analyserData = new Uint8Array(analyser.frequencyBinCount);
+		var oscilloscopeData = new Float32Array(512);
+
+		filter.connect(analyser);
 
 		var mouseInput = new MouseInput();
 
@@ -40,15 +55,20 @@ module.exports = function(THREE, audioContext) {
 			filter.type = filterTypes[++currentType % filterTypes.length];
 		};
 
+		var oscilloscope = new Oscilloscope();
+		this.add(oscilloscope);
+
 		this.render = function(time) {
 			var now = audioContext.currentTime;
 			var f = mouseInput.y * maxFrequency;
 			filter.frequency.setValueAtTime(f, now);
+			analyser.getByteFrequencyData(analyserData);
+			updateVisualisation(analyserData);
 		};
 	
 		this.activate = function() {
 			gain.start();
-			filter.connect(gain);
+			analyser.connect(gain);
 			amenLoop.start();
 			mouseInput.start();
 		};
@@ -56,19 +76,35 @@ module.exports = function(THREE, audioContext) {
 		this.deactivate = function() {
 			gain.stop(function() {
 				amenLoop.stop();
-				filter.disconnect();
+				analyser.disconnect();
 			});
 			mouseInput.stop();
 		};
 
+		function updateVisualisation(data) {
+			var dataLength = data.length / 4;
+			var dataIndex = 0;
+			var numPoints = oscilloscopeData.length;
+			var skipLength = Math.round(dataLength / numPoints);
+
+			for(var j = 0; j < numPoints; j++) {
+				var v =  data[dataIndex] / 255.0;
+				dataIndex += skipLength;
+				oscilloscopeData[j] = v;
+			}
+
+			oscilloscope.setData(oscilloscopeData);
+		}
+
 	}
 
-	BiquadFilter.prototype = Object.create(Renderable.prototype);
-	BiquadFilter.prototype.constructor = BiquadFilter;
+	Analyser.prototype = Object.create(Renderable.prototype);
+	Analyser.prototype.constructor = Analyser;
 
-	return BiquadFilter;
+	return Analyser;
 
 };
+
 
 
 
