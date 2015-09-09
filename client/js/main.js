@@ -1,5 +1,6 @@
 var Threedees = require('./Threedes');
 var slides;
+var toggleFullScreen = require('presentation-fullscreen');
 
 document.addEventListener('DOMContentLoaded', init);
 
@@ -77,6 +78,3 @@ function render(t) {
 	slides.render(t);
 }
 
-function toggleFullScreen() {
-	console.error('full screen not implemented yet :(');
-}
