@@ -35,11 +35,11 @@ module.exports = function(THREE, audioContext) {
 			
 			var self = this;
 
-			console.log(rawHTML, filtered, lines);
+			// console.log(rawHTML, filtered, lines);
 
 			var lineObjects = [];
 
-			console.log(window._typeface_js.faces);
+			// console.log(window._typeface_js.faces);
 			
 			lines.forEach(function(line) {
 				
