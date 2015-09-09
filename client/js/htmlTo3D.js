@@ -206,7 +206,7 @@ module.exports = function(html, options) {
 		var containerMesh = new THREE.Mesh(containerGeom, containerMat);
 		containerGeom.computeFaceNormals();
 		var helper = new THREE.FaceNormalsHelper(containerMesh, 30, colours.primary2, 1);
-		helper.material.opacity = 0.75;
+		helper.material.opacity = 0.0;
 		helper.material.transparent = true;
 		slideObject.add(helper);
 		
