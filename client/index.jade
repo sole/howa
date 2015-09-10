@@ -12,7 +12,10 @@ html
 	body
 		div#renderer
 		div.slides
-			section(data-offset-y=1000)
+			section(data-offset-y=1500)
+				pre
+					code.
+						ALL SYSTEMS READY
 				
 			section(data-transition-duration=30)
 				h1 Hands-On Web Audio
@@ -365,7 +368,7 @@ html
 				pre
 					code.
 						var filter = ac.createBiquadFilter();
-						filter.type = 'highpass';
+						filter.type = 'lowpass';
 						filter.connect(ac.destination);
 						bufferSource.connect(filter);
 						bufferSource.start();

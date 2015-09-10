@@ -27,6 +27,7 @@ module.exports = function(THREE, audioContext) {
 			var now = audioContext.currentTime;
 			var pos = Math.sin(time * 0.001);
 			mesh.position.x = pos * 80;
+			oscillator.frequency.setValueAtTime(330 + 20 * pos, now);
 			stereoPanner.pan.setValueAtTime(pos, now);
 		};
 	
