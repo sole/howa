@@ -6,33 +6,44 @@ module.exports = function(THREE, audioContext) {
 	var MIDIUtils = require('midiutils');
 
 	var nodes = [
+		/*'Oscillator',
 		'Oscillator',
 		'Oscillator',
-		'Oscillator',
-		'Destination'
+		'Destination'*/
 	];
 
 	var edges = [
-		[0, 3],
+		/*[0, 3],
 		[1, 3],
-		[2, 3]
+		[2, 3]*/
 	];
 
 	function SceneAudioGraphTriple() {
 
 		Renderable.call(this, audioContext);
 
-		var notes = ['C-4', 'E-4', 'G-4'];
+		var notes = [
+			'C-3', 'E-3', 'G-3',
+			'C-4', 'E-4', 'G-4',
+			'C-5', 'E-5', 'G-5',
+			'C-6', 'E-6', 'G-6',
+			'C-7', 'E-7', 'G-7'
+		];
 		var frequencies = [];
 		var oscillators = [];
 		var gain = TransitionGain(audioContext);
 		gain.connect(this.audioNode);
 
-		notes.forEach(function(note) {
+		var destinationIndex = notes.length;
+
+		notes.forEach(function(note, index) {
 			var noteNumber = MIDIUtils.noteNameToNoteNumber(note);
 			var frequency = MIDIUtils.noteNumberToFrequency(noteNumber);
 			frequencies.push(frequency);
+			nodes.push('Oscillator');
+			edges.push([index, destinationIndex]);
 		});
+		nodes.push('Destination');
 
 		var graph = new Graph();
 		graph.setData(nodes, edges);
@@ -47,9 +58,10 @@ module.exports = function(THREE, audioContext) {
 		this.activate = function() {
 			oscillators.length = 0;
 			frequencies.forEach(function(f) {
-				oscillator = audioContext.createOscillator();
+				var oscillator = audioContext.createOscillator();
 				oscillator.connect(gain);
 				oscillator.frequency.value = f;
+				oscillator.type = 'square';
 				oscillator.start();
 				oscillators.push(oscillator);
 			});

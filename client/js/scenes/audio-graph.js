@@ -2,39 +2,74 @@ module.exports = function(THREE, audioContext) {
 
 	var Renderable = require('../Renderable')(THREE);
 	var Graph = require('./Graph')(THREE, audioContext);
+	var TransitionGain = require('./TransitionGain');
+	var MIDIUtils = require('midiutils');
 
 	var nodes = [
-		'Oscillator',
-		'Destination'
+		/*'Oscillator', // 0
+		'Oscillator', // 1
+		'Oscillator', // 2
+		'BiquadFilter', // 3
+		'BiquadFilter', // 4
+		'BiquadFilter', // 5
+		'Gain', // 6
+		'Destination' // 7*/
 	];
 
 	var edges = [
-		[0, 1]
-	];
-
-	var nodes3 = [
-		'Oscillator', // 0
-		'Oscillator', // 1
-		'BiquadFilter', // 2
-		'WaveShaper', // 3
-		'Convolver', // 4
-		'Destination' // 5
-	];
-
-	var edges3 = [
-		[0, 2],
-		[1, 3],
-		[2, 4],
-		[3, 4],
-		[4, 5]
+		/*[0, 3],
+		[1, 4],
+		[2, 5],
+		[3, 6],
+		[4, 6],
+		[5, 6],
+		[6, 7]*/
 	];
 
 	function SceneAudioGraph() {
 
 		Renderable.call(this, audioContext);
 
+		var notes = [
+			'C-2',
+			'C-3', 'E-3', 'G-3',
+			'C-4', 'E-4', 'G-4',
+			'C-5', 'E-5', 'G-5',
+			'C-6', 'E-6', 'G-6',
+			'C-7', 'E-7', 'G-7'
+		];
+		
+		var frequencies = [];
+		var oscillators = [];
+		var filters = [];
+		var gain = TransitionGain(audioContext);
+		gain.connect(this.audioNode);
+
+		// Pass through gain node just to prove a point that the graph 
+		// can be complex
+		var globalGain = audioContext.createGain();
+
+		var globalGainIndex = notes.length * 2;
+		var destinationIndex = globalGainIndex + 1;
+
+		var i = 0;
+		notes.forEach(function(note, index) {
+			var noteNumber = MIDIUtils.noteNameToNoteNumber(note);
+			var frequency = MIDIUtils.noteNumberToFrequency(noteNumber);
+			frequencies.push(frequency);
+			nodes.push('Oscillator');
+			nodes.push('Filter');
+			edges.push([i, i + 1]);
+			edges.push([i + 1, globalGainIndex]);
+			i += 2;
+		});
+		nodes.push('Gain');
+		nodes.push('Destination');
+		edges.push([globalGainIndex, destinationIndex]);
+
+
 		var graph = new Graph();
-		graph.setData(nodes3, edges3);
+		graph.setData(nodes, edges);
 		this.add(graph);
 
 		var lastTime = 0;
@@ -44,9 +79,40 @@ module.exports = function(THREE, audioContext) {
 		};
 
 		this.activate = function() {
+			
+			oscillators.length = 0;
+			filters.length = 0;
+			
+			var cutOffFrequency = 400; // audioContext.sampleRate * 0.1;
+			var now = audioContext.currentTime;
+
+			frequencies.forEach(function(f, index) {
+				var oscillator = audioContext.createOscillator();
+				oscillator.frequency.value = f;
+				oscillator.type = 'square';
+				var filter = audioContext.createBiquadFilter();
+				filter.type = 'lowpass';
+				filter.frequency.setValueAtTime(cutOffFrequency, now);
+				oscillator.connect(filter);
+				filter.connect(globalGain);
+				oscillator.start();
+				oscillators.push(oscillator);
+				filters.push(filter);
+			});
+
+			globalGain.connect(gain);
+			gain.start();
 		};
 
 		this.deactivate = function() {
+			gain.stop(function() {
+				globalGain.disconnect();
+				oscillators.forEach(function(oscillator, index) {
+					oscillator.stop();
+					oscillator.disconnect();
+					filters[index].disconnect();
+				});
+			});
 		};
 
 	}

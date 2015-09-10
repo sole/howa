@@ -2,17 +2,18 @@ module.exports = function(THREE, audioContext) {
 
 	var Renderable = require('../Renderable')(THREE);
 	var makeText = require('../makeText')(THREE);
+	var colours = require('../colours');
 	var ForceLayout = require('./publish_me/ForceLayout');
 
 	function makeNode(text) {
 		
-		var textObj = makeText(text);
+		var textObj = makeText(text, { color: colours.primary1 });
 		textObj.geometry.center();
 
 		var box = textObj.geometry.boundingBox;
 		var size = box.size().clone().multiplyScalar(1.1);
 
-		var mat = new THREE.MeshBasicMaterial({ wireframe: true, color: 0xcccccc });
+		var mat = new THREE.MeshBasicMaterial({ wireframe: true, color: colours.secondary2 });
 		var geom = new THREE.BoxGeometry(size.x, size.y, size.z);
 		var obj = new THREE.Mesh(geom, mat);
 		textObj.add(obj);
@@ -21,7 +22,7 @@ module.exports = function(THREE, audioContext) {
 	}
 
 	function makeEdge(node1, node2) {
-		var mat = new THREE.LineBasicMaterial({ color: 0x00FFFF });
+		var mat = new THREE.LineBasicMaterial({ color: colours.secondary1 });
 		var geom = new THREE.Geometry();
 		// will the line geometry update if the positions are updated? hoping so!
 		geom.vertices.push(node1.position);
