@@ -171,7 +171,6 @@ html
 						// osc out [-100, 100] now
 
 			section
-				img(src='data/img/placeholder.png', data-replace='gain')
 				pre
 					code.
 						window.addEventListener('mousemove', function(e) {
@@ -180,19 +179,19 @@ html
 						});
 
 			section
-				pre
-					code.
-						var lfoOsc = ac.createOscillator();
-						var lfoGain = ac.createGain();
-						lfoOsc.connect(lfoGain);
-						lfoGain.gain.setValueAtTime(10, now);
-						// lfoGain outputs [-10, 10]
-
+				p gain value as f(mouseY)
+				img(src='data/img/placeholder.png', data-replace='gain')
+	
 			section
 				pre
 					code.
+						var lfOsc = ac.createOscillator();
+						var lfGain = ac.createGain();
+						lfOsc.connect(lfGain);
+						lfGain.gain.setValueAtTime(10, now);
+						// lfGain outputs [-10, 10]
 						var osc = ac.createOscillator();
-						lfoGain.connect(osc.frequency);
+						lfGain.connect(osc.frequency);
 						osc.frequency.setValueAtTime(100, now);
 						// osc oscillates at [90, 110]
 
@@ -224,8 +223,7 @@ html
 
 			// nodes not only help build the node graph
 			section
-				h2 Node instances:
-				h1 akin to utilities to schedule events
+				h1 schedule events via node instances
 
 			section
 				p events = (mostly) value changes
@@ -237,7 +235,7 @@ html
 						gain.gain.exponentialRampToValueAtTime(0, 13.5);
 
 			section
-				h1 Web Audio is schedule driven
+				h1 the graph is super optimised
 
 			section
 				h1 creating and throwing nodes away is cheap
@@ -285,6 +283,9 @@ html
 						    bufferSource.connect(ac);
 						    bufferSource.start();
 						});
+
+			section
+				h1 BufferSource
 				img(src='data/img/placeholder.png', data-replace='buffer-source')
 
 
@@ -303,6 +304,10 @@ html
 						var now = ac.currentTime;
 						var y = getMouseY();
 						bufferSource.playbackRate.setValueAtTime(y, now);
+			
+			section
+				h1 BufferSource
+				h2 Pitch bending!
 				img(src='data/img/placeholder.png', data-replace='buffer-source-bending')
 
 			section
@@ -321,6 +326,9 @@ html
 						stereoPanner.pan.setValueAtTime(-1, now);
 						// or right
 						stereoPanner.pan.setValueAtTime(1, now);
+
+			section
+				h1 ((((( O_O )))))
 				img(src='data/img/placeholder.png', data-replace='stereo-panner')
 
 			section
