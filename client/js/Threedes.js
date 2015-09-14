@@ -86,10 +86,10 @@ function Threedees() {
 
 		scene = new THREE.Scene();
 		// scene.add(new THREE.AmbientLight(0x444444));
-		//
+		
 		anaglyphEffect = new THREE.AnaglyphEffect(renderer);
 
-		currentRenderer = anaglyphEffect;
+		currentRenderer = renderer;
 
 		camera = new THREE.PerspectiveCamera(60, 320 / 200, 1, 100000);
 		cameraTarget = new THREE.Vector3(0, 0, 0);
@@ -117,8 +117,6 @@ function Threedees() {
 			slidePadding: 30,
 			audioContext: audioContext
 		});
-
-		//threeDeeSlides = threeDeeWorld.slides;
 
 		threeDeeSlides.forEach(function(slide) {
 
