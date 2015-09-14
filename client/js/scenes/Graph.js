@@ -7,7 +7,7 @@ module.exports = function(THREE, audioContext) {
 
 	function makeNode(text) {
 		
-		var textObj = makeText(text, { color: colours.primary1 });
+		var textObj = makeText(text, { color: colours.primary1, size: 3 });
 		textObj.geometry.center();
 
 		var box = textObj.geometry.boundingBox;
@@ -22,7 +22,7 @@ module.exports = function(THREE, audioContext) {
 	}
 
 	function makeEdge(node1, node2) {
-		var mat = new THREE.LineBasicMaterial({ color: colours.secondary1 });
+		var mat = new THREE.LineBasicMaterial({ color: colours.secondary1, linewidth: 2 });
 		var geom = new THREE.Geometry();
 		// will the line geometry update if the positions are updated? hoping so!
 		geom.vertices.push(node1.position);
@@ -72,7 +72,7 @@ module.exports = function(THREE, audioContext) {
 		this.edges3D = edges3D;
 		this.edges = edges;
 
-		var w = 60, h = w / 2, d = h;
+		var w = 60, h = w * 0.7, d = h;
 		var boundingBox = new THREE.Box3(new THREE.Vector3(-w, -h, -d), new THREE.Vector3(w, h, d));
 
 		this.layout = new ForceLayout({
