@@ -164,8 +164,8 @@ html
 			section
 				pre
 					code.
-						var gain = ac.createGain();
 						var osc = ac.createOscillator();
+						var gain = ac.createGain();
 						osc.connect(gain);
 						gain.connect(ac.destination);
 						gain.gain.value = 100;
