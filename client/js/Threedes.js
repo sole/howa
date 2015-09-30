@@ -1,8 +1,8 @@
 var EventEmitter = require('events').EventEmitter;
 var util = require('util');
-var THREE = require('n3d-threejs');
+var THREE = require('three.js');
 var TWEEN = require('tween.js');
-var htmlTo3D = require('./htmlTo3D');
+var htmlTo3D = require('./htmlTo3D')(THREE);
 var distributeObjects = require('./distribute-objects')(THREE);
 var colours = require('./colours');
 
@@ -75,7 +75,6 @@ function Threedees() {
 			renderer.setPixelRatio(window.devicePixelRatio);
 		}
 		renderer.setClearColor(colours.background, 1.0);
-
 
 
 		//renderer.shadowMapEnabled = true;
