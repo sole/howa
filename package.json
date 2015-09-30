@@ -19,6 +19,7 @@
   "author": "sole",
   "license": "Apache 2",
   "dependencies": {
+    "analytics": "git+https://github.com/sole/analytics.git",
     "brfs": "^1.4.1",
     "defined": "^1.0.0",
     "es6-promise": "^3.0.2",
@@ -29,9 +30,9 @@
     "lerp": "^1.0.3",
     "make-array": "^0.1.2",
     "midiutils": "0.0.4",
-    "n3d-threejs": "^70.0.0",
     "openmusic-sample-player": "^1.6.0",
     "presentation-fullscreen": "^1.0.0",
+    "three.js": "git+ssh://git@github.com/sole/three.js.git",
     "tween.js": "^15.0.0",
     "unlerp": "^1.0.1",
     "you-know-what": "^1.0.0"

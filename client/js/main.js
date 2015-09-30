@@ -1,3 +1,5 @@
+var analytics = require('analytics');
+
 var Threedees = require('./Threedes');
 var slides;
 var toggleFullScreen = require('presentation-fullscreen');
@@ -5,6 +7,8 @@ var toggleFullScreen = require('presentation-fullscreen');
 document.addEventListener('DOMContentLoaded', init);
 
 function init() {
+
+	analytics('UA-384699-1');
 
 	var htmlSlidesElement = document.querySelector('.slides');
 	slides = new Threedees();
