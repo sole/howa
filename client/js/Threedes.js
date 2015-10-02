@@ -108,8 +108,8 @@ function Threedees() {
 
 		// controls.keys = [ 65, 83, 68 ]; TODO what are these keys? 65 is A
 
-		var axisHelper = new THREE.AxisHelper(100);
-		scene.add(axisHelper);
+		//var axisHelper = new THREE.AxisHelper(100);
+		//scene.add(axisHelper);
 		
 
 		threeDeeSlides = htmlTo3D(htmlSlides, {
@@ -195,10 +195,9 @@ function Threedees() {
 		
 		currentRenderer.render(scene, camera);
 
-		//renderer.render(scene, camera);
-		//anaglyphEffect.render(scene, camera);
 	};
 
+	
 	this.show = function(slideNumber) {
 
 		if(currentSlideNumber >= 0 && currentSlideNumber !== slideNumber) {
@@ -242,10 +241,10 @@ function Threedees() {
 			y: dstCamera.y,
 			z: dstCamera.z
 		}, transitionDuration)
-		.onUpdate(function() {
-			audioContext.listener.setPosition(this.x, this.y, this.z);
-		})
-		.start();
+			.onUpdate(function() {
+				audioContext.listener.setPosition(this.x, this.y, this.z);
+			})
+			.start();
 
 		this.emit('change', { index: slideNumber });
 
