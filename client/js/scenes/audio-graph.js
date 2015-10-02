@@ -43,14 +43,7 @@ module.exports = function(THREE, audioContext) {
 		var oscillators = [];
 		var filters = [];
 		var gain = TransitionGain(audioContext);
-		gain.connect(this.audioNode);
-
-		// Pass through gain node just to prove a point that the graph 
-		// can be complex
-		var globalGain = audioContext.createGain();
-
-		var globalGainIndex = notes.length * 2;
-		var destinationIndex = globalGainIndex + 1;
+		var destinationIndex = notes.length * 2;
 
 		var i = 0;
 		notes.forEach(function(note, index) {
@@ -60,12 +53,10 @@ module.exports = function(THREE, audioContext) {
 			nodes.push('Oscillator');
 			nodes.push('Filter');
 			edges.push([i, i + 1]);
-			edges.push([i + 1, globalGainIndex]);
+			edges.push([i + 1, destinationIndex]);
 			i += 2;
 		});
-		nodes.push('Gain');
 		nodes.push('Destination');
-		edges.push([globalGainIndex, destinationIndex]);
 
 
 		var graph = new Graph();
@@ -83,7 +74,7 @@ module.exports = function(THREE, audioContext) {
 			oscillators.length = 0;
 			filters.length = 0;
 			
-			var cutOffFrequency = 400; // audioContext.sampleRate * 0.1;
+			var cutOffFrequency = 400;
 			var now = audioContext.currentTime;
 
 			frequencies.forEach(function(f, index) {
@@ -94,19 +85,19 @@ module.exports = function(THREE, audioContext) {
 				filter.type = 'lowpass';
 				filter.frequency.setValueAtTime(cutOffFrequency, now);
 				oscillator.connect(filter);
-				filter.connect(globalGain);
+				filter.connect(gain);
 				oscillator.start();
 				oscillators.push(oscillator);
 				filters.push(filter);
 			});
 
-			globalGain.connect(gain);
+			gain.connect(this.audioNode);
 			gain.start();
 		};
 
 		this.deactivate = function() {
 			gain.stop(function() {
-				globalGain.disconnect();
+				gain.disconnect();
 				oscillators.forEach(function(oscillator, index) {
 					oscillator.stop();
 					oscillator.disconnect();
