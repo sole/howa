@@ -42,22 +42,22 @@ module.exports = function(THREE) {
 	}
 
 
-	function elementToObject(el, three, audioContext) {
+	function elementToObject(el, THREE, audioContext) {
 		var nodeProperties = knownNodes[el.nodeName];
 		
 		if(nodeProperties.replace) {
-			return elementToReplacedObject(el, three, audioContext, nodeProperties);
+			return elementToReplacedObject(el, THREE, audioContext, nodeProperties);
 		} else {
-			return elementToTextObject(el, three, nodeProperties);
+			return elementToTextObject(el, THREE, nodeProperties);
 		}
 	}
 
 
-	function elementToReplacedObject(el, three, audioContext, nodeProperties) {
+	function elementToReplacedObject(el, THREE, audioContext, nodeProperties) {
 		if(nodeProperties.replace === 'renderable') {
-			return elementToRenderableObject(el, three, audioContext, nodeProperties);
+			return elementToRenderableObject(el, THREE, audioContext, nodeProperties);
 		} else if(nodeProperties.replace === 'preformatted') {
-			var ctor = replacementScenes['preformatted'](three, audioContext);
+			var ctor = replacementScenes['preformatted'](THREE, audioContext);
 			var instance = new ctor();
 			instance.setFromElement(el);
 			instance.isRenderable = false; //true;
@@ -66,9 +66,9 @@ module.exports = function(THREE) {
 	}
 
 
-	function elementToRenderableObject(el, three, audioContext, nodeProperties) {
+	function elementToRenderableObject(el, THREE, audioContext, nodeProperties) {
 		var key = el.dataset.replace;
-		var ctor = replacementScenes[key](three, audioContext);
+		var ctor = replacementScenes[key](THREE, audioContext);
 		var instance = new ctor();
 		instance.isRenderable = true;
 		return instance;
@@ -89,8 +89,7 @@ module.exports = function(THREE) {
 		});
 	}
 
-
-	return function(html, options) {
+	return function htmlTo3D(html, options) {
 
 		options = options || {};
 		
@@ -100,8 +99,7 @@ module.exports = function(THREE) {
 
 		// Each slide is represented by a <section> element in HTML
 		var slideElements = makeArray(html.querySelectorAll('section'));
-
-		var slideObjects = slideElements.map(function(sectionElement) {
+		var slideObjects = slideElements.map(function(sectionElement, sectionIndex) {
 
 			var slideObject = new Renderable(audioContext);
 			
@@ -133,7 +131,7 @@ module.exports = function(THREE) {
 			
 			// Convert known element types to their counterpart 3d object representation
 			var childObjects = [];
-			childElements.forEach(function(el) {
+			childElements.forEach(function(el, childI) {
 				if(!isKnownNode(el.nodeName)) {
 					return;
 				}
@@ -149,11 +147,6 @@ module.exports = function(THREE) {
 				if(obj.audioNode) {
 					obj.audioNode.connect(slideObject.audioNode);
 				}
-
-				//var axisHelper = new THREE.AxisHelper(50);
-				//obj.add(axisHelper);
-
-				
 			});
 
 			slideObject.add(contentsObject);
