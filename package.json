@@ -4,7 +4,7 @@
   "description": "wop wop",
   "main": "index.js",
   "scripts": {
-    "build:client": "npm run build:client:clean && npm run build:client:html && npm run build:client:js",
+    "build:client": "npm run build:client:clean && npm run build:client:html && npm run build:client:data && npm run build:client:css && npm run build:client:js",
     "build:client:clean": "rimraf build/ && mkdirp build/",
     "build:client:css": "mkdirp build/css && cpx client/css/* build/css",
     "build:client:data": "mkdirp build/data && cpx -v \"client/data/**/*\" build/data",
@@ -42,6 +42,7 @@
     "rimraf": "^2.4.3",
     "three.js": "git+ssh://git@github.com/sole/three.js.git",
     "tween.js": "^15.0.0",
+    "uglifyify": "^3.0.1",
     "unlerp": "^1.0.1",
     "watch": "^0.16.0"
   }
