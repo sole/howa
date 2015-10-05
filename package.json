@@ -4,8 +4,10 @@
   "description": "wop wop",
   "main": "index.js",
   "scripts": {
+    "build:client": "npm run build:client:js",
+    "build:client:js": "mkdirp build/js && browserify -t brfs client/js/main.js -o build/js/bundle.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "gulp"
+    "start": "npm run build:client"
   },
   "keywords": [
     "web",
@@ -21,6 +23,7 @@
   "dependencies": {
     "analytics": "git+https://github.com/sole/analytics.git",
     "brfs": "^1.4.1",
+    "browserify": "^11.2.0",
     "defined": "^1.0.0",
     "es6-promise": "^3.0.2",
     "gulp": "^3.9.0",
@@ -30,6 +33,7 @@
     "lerp": "^1.0.3",
     "make-array": "^0.1.2",
     "midiutils": "0.0.4",
+    "mkdirp": "^0.5.1",
     "openmusic-sample-player": "^1.6.0",
     "presentation-fullscreen": "^1.0.0",
     "three.js": "git+ssh://git@github.com/sole/three.js.git",
