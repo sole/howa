@@ -6,12 +6,13 @@
   "scripts": {
     "build:client": "npm run build:client:clean && npm run build:client:html && npm run build:client:js",
     "build:client:clean": "rimraf build/ && mkdirp build/",
-	"build:client:css": "mkdirp build/css && cpx client/css/* build/css",
-	"build:client:data": "mkdirp build/data && cpx -v \"client/data/**/*\" build/data",
+    "build:client:css": "mkdirp build/css && cpx client/css/* build/css",
+    "build:client:data": "mkdirp build/data && cpx -v \"client/data/**/*\" build/data",
     "build:client:html": "jade client/index.jade -o build/",
     "build:client:js": "mkdirp build/js && browserify -t brfs client/js/main.js -o build/js/bundle.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npm run build:client"
+    "start": "npm run build:client && npm run watch",
+    "watch": "watch \"npm run build:client\" client/"
   },
   "keywords": [
     "web",
@@ -31,10 +32,6 @@
     "cpx": "^1.2.1",
     "defined": "^1.0.0",
     "es6-promise": "^3.0.2",
-    "gulp": "^3.9.0",
-    "gulp-batch": "^1.0.5",
-    "gulp-jade": "^1.1.0",
-    "gulp-watch": "^4.2.4",
     "jade": "^1.11.0",
     "lerp": "^1.0.3",
     "make-array": "^0.1.2",
@@ -46,6 +43,6 @@
     "three.js": "git+ssh://git@github.com/sole/three.js.git",
     "tween.js": "^15.0.0",
     "unlerp": "^1.0.1",
-    "you-know-what": "^1.0.0"
+    "watch": "^0.16.0"
   }
 }
