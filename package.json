@@ -7,6 +7,7 @@
     "build:client": "npm run build:client:clean && npm run build:client:html && npm run build:client:js",
     "build:client:clean": "rimraf build/ && mkdirp build/",
 	"build:client:css": "mkdirp build/css && cpx client/css/* build/css",
+	"build:client:data": "mkdirp build/data && cpx -v \"client/data/**/*\" build/data",
     "build:client:html": "jade client/index.jade -o build/",
     "build:client:js": "mkdirp build/js && browserify -t brfs client/js/main.js -o build/js/bundle.js",
     "test": "echo \"Error: no test specified\" && exit 1",
