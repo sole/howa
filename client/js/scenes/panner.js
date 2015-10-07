@@ -7,45 +7,36 @@ module.exports = function(THREE, audioContext) {
 	var SamplePlayer = require('openmusic-sample-player');
 	var fs = require('fs');
 	var Promise = require('es6-promise').Promise;
+	var loadSample = require('./publish_me/loadSample');
 	var colours = require('../colours');
+
+	var loadSamples = function(context, paths) {
+		return Promise.all(paths.map(function(path) {
+			return loadSample(context, path);
+		}));
+	};
 	
 	//var birdSample1 = fs.readFileSync(__dirname + '/birds/bird01.ogg');
 	//var birdSample2 = fs.readFileSync(__dirname + '/birds/bird02.ogg');
 	//var birdSample3 = fs.readFileSync(__dirname + '/birds/bird03.ogg');
 	//var birdSample4 = fs.readFileSync(__dirname + '/birds/bird04.ogg');
-	var birdSample5 = fs.readFileSync(__dirname + '/birds/bird05.ogg');
+	/*var birdSample5 = fs.readFileSync(__dirname + '/birds/bird05.ogg');
 	var birdSample6 = fs.readFileSync(__dirname + '/birds/bird06.ogg');
 	var birdSample7 = fs.readFileSync(__dirname + '/birds/bird07.ogg');
-	var birdSample8 = fs.readFileSync(__dirname + '/birds/bird08.ogg');
+	var birdSample8 = fs.readFileSync(__dirname + '/birds/bird08.ogg');*/
 	
-	var samples = [
-		/*birdSample1,
-		birdSample2,
-		birdSample3,
-		birdSample4,*/
-		birdSample5, birdSample6, birdSample7, birdSample8 ];
+	var prefix = 'data/birds/';
 	
-	var decodedBirdSamples = [];
+	var sampleURLs = [];
+	
+	for(var i = 5; i < 9; i++) {
+		sampleURLs.push(prefix + 'bird0' + i + '.ogg');
+	}
+
+	console.log(sampleURLs);
 
 	function getRandom(maxValue) {
 		return maxValue * (Math.random() - 0.5);
-	}
-
-	function decodeBirdSamples(audioContext, binarySamples) {
-		var decodedSamples = binarySamples.map(function(binary) {
-			return new Promise(function(ok, fail) {
-				audioContext.decodeAudioData(
-					binary.toArrayBuffer(),
-					function success(buffer) {
-						ok(buffer);
-					},
-					function error(e) {
-						fail(e);
-					}
-				);
-			});
-		});
-		return Promise.all(decodedSamples);
 	}
 
 	function Panner() {
@@ -77,8 +68,7 @@ module.exports = function(THREE, audioContext) {
 		var birdSink = audioContext.createGain();
 		birdSink.gain.setValueAtTime(maxGain, audioContext.currentTime);
 
-		decodeBirdSamples(audioContext, samples).then(function(buffers) {
-			decodedBirdSamples = buffers;
+		loadSamples(audioContext, sampleURLs).then(function(buffers) {
 			initBirds(buffers);
 		});
 
@@ -159,7 +149,7 @@ module.exports = function(THREE, audioContext) {
 				bird.rotation.y = Math.atan2( - boid.velocity.z, boid.velocity.x );
 				bird.rotation.z = Math.asin( boid.velocity.y / boid.velocity.length() );
 
-				bird.phase = ( bird.phase + ( Math.max( 0, bird.rotation.z ) + 0.1 )  ) % 62.83;
+				bird.phase = ( bird.phase + ( Math.max( 0, bird.rotation.z ) + 0.1 ) ) % 62.83;
 				bird.geometry.vertices[ 5 ].y = bird.geometry.vertices[ 4 ].y = Math.sin( bird.phase ) * 5;
 				bird.geometry.verticesNeedUpdate = true;
 

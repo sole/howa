@@ -14,12 +14,13 @@ module.exports = function loadSample(context, samplePath) {
 				fail('Empty response');
 			}
 
-			console.log('Attempting to decode');
+			console.log('Attempting to decode ' + samplePath);
 			context.decodeAudioData(response, function(buffer) {
 				console.log('decoded');
 				ok(buffer);
 			},  function(error) {
-				fail('Cannot decode sample at ' + samplePath + ' / ' + error);
+				var msg = 'Cannot decode sample at ' + samplePath + ' / ' + error;
+				fail(msg);
 			});
 		});
 		req.send();
