@@ -183,13 +183,6 @@ module.exports = function(THREE) {
 			var contentSize = contentBox.size();
 			var contentCenter = contentBox.center();
 
-			// Center objects that need to be centered horizontally
-			/*childObjects.forEach(function(obj) {
-				if(obj.isRenderable) {
-					obj.position.x = contentCenter.x;
-				}
-			});*/
-			
 			contentsObject.position.sub(contentCenter);
 		
 			// Create box helper including padding so as to 'grow' the slide
