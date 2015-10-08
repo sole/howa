@@ -23,7 +23,8 @@ module.exports = function(THREE) {
 		'panner': require('./scenes/panner'),
 		'preformatted': require('./scenes/preformatted'),
 		'biquadfilter': require('./scenes/biquadfilter'),
-		'analyser': require('./scenes/analyser')
+		'analyser': require('./scenes/analyser'),
+		'realtime': require('./scenes/realtime')
 	};
 
 	var knownNodes = {
