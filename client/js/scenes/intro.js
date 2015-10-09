@@ -53,13 +53,13 @@ module.exports = function(THREE, audioContext) {
 		var transitionTween = null;
 		var transitionLength = 2500;
 
-		var hemisphereGeom = new THREE.SphereGeometry(1000, 64, 64);
+		var hemisphereGeom = new THREE.SphereGeometry(1000, 32, 32);
 		var hemisphereMat = new THREE.MeshBasicMaterial({ wireframe: true, color: colours.primary2 });
 		hemisphereMat.opacity = 0.0;
 		hemisphereMat.transparent = true;
 		var hemisphere = new THREE.Mesh(hemisphereGeom, hemisphereMat);
 
-		var randomObjects = generateRandomObjects(100, 100, 900);
+		var randomObjects = generateRandomObjects(50, 100, 900);
 		this.add(randomObjects);
 
 		var lastTime = 0;
