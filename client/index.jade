@@ -15,7 +15,7 @@ html
 			section(data-offset-y=1500)
 				pre
 					code.
-						ALL SYSTEMS READY
+						hey there
 				
 			section(data-transition-duration=30)
 				h1 Hands-On Web Audio
@@ -265,8 +265,8 @@ html
 				h2 Playing sound samples
 
 			section
-				h1 BufferSource
-				h2 Three steps process:
+				h1 Loading samples
+				h2 Three steps process
 				// XHR/inline
 				p Load binary sample data
 				// anything the browser can play W.A. can play
@@ -275,18 +275,38 @@ html
 				p Use it!
 
 			section
-				h1 BufferSource
+				h2 1/Load binary data
 				pre
 					code.
-						magicallyLoadAndDecode(binary, function(decodedBuffer) {
-							var bufferSource = ac.createBufferSource();
-						    bufferSource.buffer = decodedBuffer;
-						    bufferSource.connect(ac);
-						    bufferSource.start();
+						var req = new XMLHttpRequest();
+						req.open('get', samplePath, true);
+						req.responseType = 'arraybuffer';
+						req.addEventListener('load', function() {
+							var response = req.response;
 						});
 
 			section
-				h1 BufferSource
+				h2 2/Decode into a buffer
+				pre
+					code.
+						context.decodeAudioData(response,
+						function(decodedBuffer) {
+						    // ...
+						}, function(error) {
+						    // urgh
+						});
+
+			section
+				h2 3/Use it!
+				pre
+					code.
+						var bufferSource = ac.createBufferSource();
+						bufferSource.buffer = decodedBuffer;
+						bufferSource.connect(ac);
+						bufferSource.start();
+
+			section
+				h1 the Amen Loop!
 				img(src='data/img/placeholder.png', data-replace='buffer-source')
 
 
@@ -370,7 +390,7 @@ html
 
 			section
 				h1 BiquadFilter
-				h2 Let certain frequencies pass
+				h2 Lets certain frequencies pass
 
 			section
 				h1 BiquadFilter
@@ -448,6 +468,11 @@ html
 				h1 Also,
 				h2 come to the Web Audio meet-ups!
 				p (right now: London and Berlin)
+
+			section
+				pre
+					code.
+						github.com/sole/howa
 
 			section
 				h1 Thanks!
