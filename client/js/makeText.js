@@ -51,7 +51,7 @@ module.exports = function(THREE) {
 		var size = defined(options.size, 5);
 		var weight = defined(options.weight, 'normal');
 		var depth = defined(options.depth, 1);
-		var curveSegments = defined(options.curveSegments, 3);
+		var curveSegments = defined(options.curveSegments, 2);
 		var lineWidth = defined(options.lineWidth, 1);
 		var wireframe = defined(options.wireframe, false);
 
