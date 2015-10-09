@@ -52,3 +52,10 @@ This is very synthetic, just in case you want some pointers. I will provide more
 	* you want to render when you want dynamic content in an object. otherwise an static representation should be fine.
 * img replacement attribute = data-replace='scene key' in the array of replacements in htmlTo3D.js (`replacementScenes`)
 
+## More resources!
+
+* My [Intro to Web Audio](https://github.com/sole/berlin-webaudio-hackday-2014) materials at the Berlin Web Audio Hackday 2014
+* [Posts tagged Web Audio](http://soledadpenades.com/tag/web-audio/) at my blog, has links to many talks on Web Audio and music
+* [Web Audio API](http://webaudio.github.io/web-audio-api/)
+* [Web MIDI API](http://webaudio.github.io/web-midi-api/)
+* [OpenMusic](https://github.com/openmusic) - modules and components for Web Audio
