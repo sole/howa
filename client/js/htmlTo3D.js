@@ -83,7 +83,7 @@ module.exports = function(THREE) {
 		return makeText(str, {
 			size: nodeProperties.size,
 			depth: 1,
-			curveSegments: 3,
+			curveSegments: 2,
 			wireframe: true,
 			color: colour,
 			lineWidth: 1
